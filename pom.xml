@@ -113,6 +113,7 @@
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.plugin.version}</version>
+
 				<configuration>
 					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
 					<webappDirectory>${basedir}/target/classes/VAADIN/widgetsets</webappDirectory>
@@ -120,6 +121,9 @@
 					<compileReport>false</compileReport>
 					<style>OBF</style>
 					<strict>true</strict>
+					<modules>
+						<module>com.ati.vaadin.ui.main.FpEstimationWidgetSet</module>
+					</modules>
 				</configuration>
 				<executions>
 					<execution>
@@ -193,6 +197,7 @@
 											<goal>compile-theme</goal>
 											<goal>update-theme</goal>
 										</goals>
+
 									</pluginExecutionFilter>
 									<action>
 										<ignore></ignore>
