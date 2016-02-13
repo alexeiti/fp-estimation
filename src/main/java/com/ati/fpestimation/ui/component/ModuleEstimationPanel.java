@@ -1,6 +1,8 @@
 package com.ati.fpestimation.ui.component;
 
 import com.ati.fpestimation.server.ComplexityType;
+import com.ati.fpestimation.server.EstimationFunction;
+import com.ati.fpestimation.server.FunctionRepository;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.*;
@@ -11,15 +13,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-/**
- * Created by alex on 13/02/16.
- */
 public class ModuleEstimationPanel extends Panel {
 
     private Grid grid = new Grid();
+    private FunctionRepository functionRepository;
 
     public ModuleEstimationPanel(String caption) {
+
         super(caption);
+        //TODO use spring beans instead
+        functionRepository = new FunctionRepository();
+
         this.setHeight(100.0f, Sizeable.Unit.PERCENTAGE);
 
         final VerticalLayout contentLayout = new VerticalLayout();
@@ -31,9 +35,9 @@ public class ModuleEstimationPanel extends Panel {
         btnAddModule.addClickListener(e -> {
             addRow();
         });
+        contentLayout.addComponent(btnAddModule);
 
         contentLayout.addComponents(new Label("Total:"), new Label("O PT"));
-        contentLayout.addComponent(btnAddModule);
         this.setContent(contentLayout);
     }
 
@@ -46,15 +50,22 @@ public class ModuleEstimationPanel extends Panel {
 
 
         grid.addColumn("Step", String.class)
-                .setRenderer(new TextRenderer()).setExpandRatio(4)
+                .setRenderer(new TextRenderer()).
+                setExpandRatio(7)
         ;
 
-        grid.addColumn("Art", String.class)
-                .setRenderer(new TextRenderer()).setExpandRatio(4);
+        grid.addColumn("Function", String.class)
+                .setRenderer(new TextRenderer())
+                .setExpandRatio(4)
+                .setEditorField(getEditComboBox("Function is required!",
+                        Arrays.asList(functionRepository.getEstimationFunctions()
+                                .stream()
+                                .map(EstimationFunction::getName).collect(Collectors.toList()))));
 
         grid.addColumn("Complexity", String.class)
-                .setRenderer(new TextRenderer()).setExpandRatio(4)
-                .setEditorField(getComboBox("Complexity is required!",
+                .setRenderer(new TextRenderer())
+                .setExpandRatio(4)
+                .setEditorField(getEditComboBox("Complexity is required!",
                         Arrays.asList(ComplexityType.values())
                                 .stream()
                                 .map(ComplexityType::getCaption).collect(Collectors.toList())));
@@ -69,11 +80,11 @@ public class ModuleEstimationPanel extends Panel {
     }
 
     private void addRow() {
-        grid.addRow("Ws Starter", "External DB", "Min", new Integer(20));
+        grid.addRow("Ws Starter", "External DB", ComplexityType.MIN.getCaption(), new Integer(20));
     }
 
 
-    private Field<?> getComboBox(String requiredErrorMsg, Collection<?> items) {
+    private Field<?> getEditComboBox(String requiredErrorMsg, Collection<?> items) {
         ComboBox comboBox = new ComboBox();
         comboBox.setNullSelectionAllowed(true);
         IndexedContainer container = new IndexedContainer(items);
