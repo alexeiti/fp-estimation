@@ -4,40 +4,58 @@ import com.ati.fpestimation.ui.component.SystemEstimationPanel;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 import javax.servlet.annotation.WebServlet;
+import java.util.Arrays;
+import java.util.Collection;
 
 
 @Theme("mytheme")
 @Widgetset("com.ati.vaadin.ui.main.FpEstimationWidgetSet")
 public class EstimationEdit extends UI {
 
+    final VerticalLayout verticalLayout = new VerticalLayout();
+    ComboBox systemComboBox;
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        final VerticalLayout layout = new VerticalLayout();
+        verticalLayout.addComponent(buildTopControlRow());
 
-        final TextField name = new TextField();
-        name.setCaption("Type your name here:");
+        verticalLayout.setMargin(true);
+        verticalLayout.setSpacing(true);
 
-        Button button = new Button("Add System");
-        button.addClickListener(e -> {
-            layout.addComponent(new SystemEstimationPanel("SEA024 Tibco"));
-        });
-
-        layout.addComponents(name, button);
-        layout.addComponents(name, button);
-        layout.setMargin(true);
-        layout.setSpacing(true);
-
-        setContent(layout);
+        setContent(verticalLayout);
     }
 
+    private AbstractLayout buildTopControlRow() {
+        HorizontalLayout topRow = new HorizontalLayout();
+        topRow.setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT);
+        topRow.addComponents(new Label("System:"),buildSystemComboBox(Arrays.asList(new String[]{"Tibco", "OfflineOE"})));
+        Button button = new Button("Add System");
+        button.addClickListener(e -> {
+            verticalLayout.addComponent(new SystemEstimationPanel(systemComboBox.getValue().toString()));
+
+        });
+
+        topRow.addComponents(button);
+        return topRow;
+    }
+
+    private Field<?> buildSystemComboBox(Collection<?> items) {
+        systemComboBox = new ComboBox();
+
+        systemComboBox.setWidth(200, Unit.PIXELS);
+        systemComboBox.setNullSelectionAllowed(false);
+        IndexedContainer container = new IndexedContainer(items);
+        systemComboBox.setContainerDataSource(container);
+        systemComboBox.setRequired(true);
+        systemComboBox.setRequiredError("Pick a system");
+        return systemComboBox;
+    }
 
     @WebServlet(urlPatterns = "/*", name = "FpEstimationServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = EstimationEdit.class, productionMode = false)

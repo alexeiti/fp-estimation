@@ -35,9 +35,16 @@ public class ModuleEstimationPanel extends Panel {
         btnAddModule.addClickListener(e -> {
             addRow();
         });
-        contentLayout.addComponent(btnAddModule);
 
-        contentLayout.addComponents(new Label("Total:"), new Label("O PT"));
+        final HorizontalLayout btmRow = new HorizontalLayout();
+        btmRow.setWidth(100f, Unit.PERCENTAGE);
+        btmRow.setMargin(true);
+        btmRow.addComponent(btnAddModule);
+
+        btmRow.addComponents(new Label("Factor: Connector(4,95)"), new Label("Total: 123 PT"));
+        contentLayout.addComponent(btmRow);
+
+
         this.setContent(contentLayout);
     }
 
@@ -58,9 +65,9 @@ public class ModuleEstimationPanel extends Panel {
                 .setRenderer(new TextRenderer())
                 .setExpandRatio(4)
                 .setEditorField(getEditComboBox("Function is required!",
-                        Arrays.asList(functionRepository.getEstimationFunctions()
+                        functionRepository.getEstimationFunctions()
                                 .stream()
-                                .map(EstimationFunction::getName).collect(Collectors.toList()))));
+                                .map(EstimationFunction::getName).collect(Collectors.toList())));
 
         grid.addColumn("Complexity", String.class)
                 .setRenderer(new TextRenderer())
@@ -76,17 +83,20 @@ public class ModuleEstimationPanel extends Panel {
                 .setEditable(false);
 
 
+
         return grid;
     }
 
     private void addRow() {
-        grid.addRow("Ws Starter", "External DB", ComplexityType.MIN.getCaption(), new Integer(20));
+        grid.addRow(null, null, ComplexityType.MIN.getCaption(), new Integer(20));
+
+
     }
 
 
     private Field<?> getEditComboBox(String requiredErrorMsg, Collection<?> items) {
         ComboBox comboBox = new ComboBox();
-        comboBox.setNullSelectionAllowed(true);
+        comboBox.setNullSelectionAllowed(false);
         IndexedContainer container = new IndexedContainer(items);
         comboBox.setContainerDataSource(container);
         comboBox.setRequired(true);
