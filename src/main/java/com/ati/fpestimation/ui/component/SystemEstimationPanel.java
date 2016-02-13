@@ -1,4 +1,4 @@
-package com.ati.vaadin.ui.component;
+package com.ati.fpestimation.ui.component;
 
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;

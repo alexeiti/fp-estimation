@@ -1,5 +1,6 @@
-package com.ati.vaadin.ui.component;
+package com.ati.fpestimation.ui.component;
 
+import com.ati.fpestimation.server.ComplexityType;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.*;
@@ -8,6 +9,7 @@ import com.vaadin.ui.renderers.TextRenderer;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Created by alex on 13/02/16.
@@ -53,12 +55,14 @@ public class ModuleEstimationPanel extends Panel {
         grid.addColumn("Complexity", String.class)
                 .setRenderer(new TextRenderer()).setExpandRatio(4)
                 .setEditorField(getComboBox("Complexity is required!",
-                        Arrays.asList(new String[]{"maximum", "medium", "min"})));
+                        Arrays.asList(ComplexityType.values())
+                                .stream()
+                                .map(ComplexityType::getCaption).collect(Collectors.toList())));
 
         grid.addColumn("Value", Integer.class)
                 .setRenderer(new NumberRenderer("%02d"))
-                .setExpandRatio(5).setEditable(false) ;
-
+                .setExpandRatio(5)
+                .setEditable(false);
 
 
         return grid;

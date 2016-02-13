@@ -1,6 +1,6 @@
-package com.ati.vaadin.ui.main;
+package com.ati.fpestimation.ui.main;
 
-import com.ati.vaadin.ui.component.SystemEstimationPanel;
+import com.ati.fpestimation.ui.component.SystemEstimationPanel;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
