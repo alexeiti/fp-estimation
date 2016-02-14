@@ -4,10 +4,12 @@ public class EstimationEntry {
     private int cost;
     private String name;
     private ComplexityType complexity;
+    // private EstimationFunction estimationFunction;
     private EstimationFunction estimationFunction;
 
     public EstimationEntry() {
-        name ="SOmething";
+        cost= 5;
+        name = "SOmething";
         complexity = ComplexityType.MIN;
     }
 
@@ -26,6 +28,14 @@ public class EstimationEntry {
 
     public int getCost() {
         return cost;
+    }
+
+    public EstimationFunction getEstimationFunction() {
+        return estimationFunction;
+    }
+
+    public void setEstimationFunction(EstimationFunction estimationFunction) {
+        this.estimationFunction = estimationFunction;
     }
 
     public String getName() {

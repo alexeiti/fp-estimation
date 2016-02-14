@@ -1,78 +1,111 @@
 package com.ati.fpestimation.ui.component;
 
-import com.ati.fpestimation.server.ComplexityType;
 import com.ati.fpestimation.server.EstimationEntry;
 import com.ati.fpestimation.server.EstimationFunction;
 import com.ati.fpestimation.server.FunctionRepository;
-import com.vaadin.client.widget.grid.datasources.ListDataSource;
+import com.ati.fpestimation.ui.UiLabelHelper;
+import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
+import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.Sizeable;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.*;
-import com.vaadin.ui.renderers.NumberRenderer;
-import com.vaadin.ui.renderers.TextRenderer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class ModuleEstimationPanel extends Panel {
+public class ModuleEstimationPanel extends Panel implements PtEstimationProvider {
 
-    private Grid grid = new Grid();
+    private static final String TOTAL_STRING_TEMPLATE = "Total: %d FP";
     private FunctionRepository functionRepository;
-    Collection<EstimationEntry> personList = new ArrayList<>();
-    BeanItemContainer<EstimationEntry> beanEstimationContainer;
-    Grid gridWithDs;
+    private Collection<EstimationEntry> estimationEntriesList = new ArrayList<>();
+    private BeanItemContainer<EstimationEntry> beanEstimationContainer;
+    private Grid gridWithDs;
+    private Label totalFpLabel;
+    private EstimationChangedHandler moduleEstimationChangedHandler;
+    private double ptSum;
+
+
+    //TODO read factor for project
+    private double factor = 4.9d;
+
+    public ModuleEstimationPanel(String caption, EstimationChangedHandler estimationChangedHandler) {
+        this(caption);
+        moduleEstimationChangedHandler = estimationChangedHandler;
+    }
 
     public ModuleEstimationPanel(String caption) {
         super(caption);
         //TODO use spring beans instead
         functionRepository = new FunctionRepository();
 
-        this.setHeight(100.0f, Sizeable.Unit.PERCENTAGE);
+        //this.setHeight(100.0f, Sizeable.Unit.PERCENTAGE);
 
         final VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.setWidth(100f, Unit.PERCENTAGE);
         contentLayout.setMargin(true);
 
 
-        gridWithDs = buildGridWithDs();
-        gridWithDs.setEditorEnabled(true);
-        contentLayout.addComponent(gridWithDs);
+        contentLayout.addComponent(buildGridWithDs());
+        contentLayout.addComponent(buildBottomRow());
 
+        this.setContent(contentLayout);
+        updateCalculations();
+    }
+
+    private HorizontalLayout buildBottomRow() {
+        final HorizontalLayout btmRow = new HorizontalLayout();
+        btmRow.setWidth(100f, Unit.PERCENTAGE);
+        btmRow.setMargin(true);
 
         Button btnAddModule = new Button("Add row");
         btnAddModule.addClickListener(e -> {
             addRow();
         });
-
-        final HorizontalLayout btmRow = new HorizontalLayout();
-        btmRow.setWidth(100f, Unit.PERCENTAGE);
-        btmRow.setMargin(true);
         btmRow.addComponent(btnAddModule);
 
-        btmRow.addComponents(new Label("Factor: Connector(4,95)"), new Label("Total: 123 PT"));
-        contentLayout.addComponent(btmRow);
-
-
-        this.setContent(contentLayout);
+        Label factorLabel = new Label("Factor: Connector(4,95)");
+        totalFpLabel = new Label();
+        btmRow.addComponents(factorLabel, totalFpLabel);
+        return btmRow;
     }
 
     private Grid buildGridWithDs() {
-
-        personList.add(new EstimationEntry());
-        personList.add(new EstimationEntry());
-
         beanEstimationContainer =
-                new BeanItemContainer<EstimationEntry>(EstimationEntry.class, personList);
+                new BeanItemContainer<EstimationEntry>(EstimationEntry.class, estimationEntriesList);
+        gridWithDs = new Grid("Estimations", beanEstimationContainer);
+        gridWithDs.setCaption("Double click to edit");
+        gridWithDs.setSizeFull();
+        gridWithDs.setEditorEnabled(true);
+        gridWithDs.setColumnOrder("name", "estimationFunction", "complexity", "cost");
 
+        gridWithDs.getColumn("estimationFunction")
+                .setEditorField(getEditComboBox("Function is required!",
+                        functionRepository.getEstimationFunctions()
+                                .stream()
+                                .map(EstimationFunction::getName).collect(Collectors.toList())))
+                .setConverter(new EstimationFunctionToStringConverter());
 
-        return new Grid("Estimations", beanEstimationContainer);
+        System.out.println(gridWithDs.getColumn("estimationFunction").getConverter());
+        System.out.println(gridWithDs.getColumns());
+        return gridWithDs;
+    }
+
+    private void updateCalculations() {
+        int fpSum = estimationEntriesList.stream().mapToInt(EstimationEntry::getCost).sum();
+        totalFpLabel.setValue(UiLabelHelper.formatFpEffort(fpSum));
+        ptSum = fpSum * factor / 8;
+
+        if (moduleEstimationChangedHandler != null) {
+            moduleEstimationChangedHandler.moduleEstimationChanged(ptSum);
+        }
+
     }
 
     private Grid buildEstimationGrid() {
-        grid = new Grid();
+      /*  grid = new Grid();
         grid.setCaption("Double click to edit");
         grid.setSizeFull();
         grid.setEditorEnabled(true);
@@ -105,17 +138,16 @@ public class ModuleEstimationPanel extends Panel {
                 .setExpandRatio(5)
                 .setEditable(false);
 
-
-        return grid;
+*/
+        return null;
     }
 
     private void addRow() {
         gridWithDs.setContainerDataSource(gridWithDs.getContainerDataSource());
-        //beanEstimationContainer.refreshItems();
         beanEstimationContainer.addBean(new EstimationEntry());
-        personList= beanEstimationContainer.getItemIds();
-        System.out.println(personList);
-
+        estimationEntriesList = beanEstimationContainer.getItemIds();
+        updateCalculations();
+        System.out.println(estimationEntriesList);
     }
 
 
@@ -129,22 +161,40 @@ public class ModuleEstimationPanel extends Panel {
         return comboBox;
     }
 
+    @Override
+    public double getPtEffort() {
+        return ptSum;
+    }
 
-    public class RefreshableBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE> {
-        public RefreshableBeanItemContainer(Collection<? extends BEANTYPE> collection) throws IllegalArgumentException {
-            super(collection);
+
+    class EstimationFunctionToStringConverter implements Converter<String, EstimationFunction> {
+
+
+        @Override
+        public EstimationFunction convertToModel(String s, Class<? extends EstimationFunction> aClass, Locale locale) throws ConversionException {
+            System.out.println("Converting " + s);
+            return new EstimationFunction("External DB", null);
+
         }
 
-        public RefreshableBeanItemContainer(Class<? super BEANTYPE> type) throws IllegalArgumentException {
-            super(type);
+        @Override
+        public String convertToPresentation(EstimationFunction estimationFunction, Class<? extends String> aClass, Locale locale) throws ConversionException {
+            if (estimationFunction != null)
+                return estimationFunction.getName();
+            else
+                return null;
         }
 
-        public RefreshableBeanItemContainer(Class<? super BEANTYPE> type, Collection<? extends BEANTYPE> collection) throws IllegalArgumentException {
-            super(type, collection);
+        @Override
+        public Class<EstimationFunction> getModelType() {
+            return EstimationFunction.class;
         }
 
-        public void refreshItems() {
-            fireItemSetChange();
+        @Override
+        public Class<String> getPresentationType() {
+            return String.class;
         }
     }
+
+
 }
