@@ -24,6 +24,7 @@ public class EstimationEdit extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         verticalLayout.addComponent(buildTopControlRow());
+        verticalLayout.setWidth(60,Unit.PERCENTAGE);
 
         verticalLayout.setMargin(true);
         verticalLayout.setSpacing(true);
