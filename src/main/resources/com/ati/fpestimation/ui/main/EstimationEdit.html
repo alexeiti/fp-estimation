@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+<v-vertical-layout :bottom="" :center="" width="1000px" margin="true" spacing="true">
+    <v-vertical-layout spacing="true" :bottom="" :center="">
+
+        <v-horizontal-layout spacing="true" width="60%" :bottom="" :center="" margin="true" spacing="true">
+            <v-combo-box item-caption-mode="id" id="txtSystemType" :required="">
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+            </v-combo-box>
+            <v-button plain-text="" id="btnAddSystem">
+                Add Sysytem
+            </v-button>
+            <v-label width="88.35%" plain-text="" _id="lblEfortTotal" :middle="" :right="">
+                Total: 200 PT
+            </v-label>
+        </v-horizontal-layout>
+
+
+        <v-vertical-layout id="systemsContainer">
+
+
+        </v-vertical-layout>
+    </v-vertical-layout>
+</v-vertical-layout>
+</body>
+</html>

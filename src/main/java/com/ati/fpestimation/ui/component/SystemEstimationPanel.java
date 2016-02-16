@@ -3,20 +3,25 @@ package com.ati.fpestimation.ui.component;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
 import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
-import com.vaadin.server.Sizeable;
+import com.vaadin.annotations.DesignRoot;
 import com.vaadin.ui.*;
+import com.vaadin.ui.declarative.Design;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@DesignRoot
 public class SystemEstimationPanel extends Panel implements EstimationChangedHandler, PtEstimationProvider {
 
-    final VerticalLayout contentLayout = new VerticalLayout();
+
+    private VerticalLayout componentContainer;
     private EstimationChangedHandler estimationChangedHandler;
     private double totalPtEffort = 0;
     private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
-    private Label effortLabel;
+    private Label lblTotalEffort;
+    private Button btnAddModule;
+    private TextField txtModuleName;
 
     public SystemEstimationPanel(String caption, EstimationChangedHandler estimationChangedHandler) {
         this(caption);
@@ -25,36 +30,25 @@ public class SystemEstimationPanel extends Panel implements EstimationChangedHan
 
     public SystemEstimationPanel(String caption) {
         super(caption);
-        this.setHeight(95f, Sizeable.Unit.PERCENTAGE);
-        contentLayout.addComponent(buildTopRow());
-        contentLayout.setWidth(95f, Unit.PERCENTAGE);
-        contentLayout.setMargin(true);
-        this.setContent(contentLayout);
+        Design.read(this);
+        buildTopRow();
         updateEffortValue();
     }
 
-    protected AbstractLayout buildTopRow() {
-        final HorizontalLayout topRow = new HorizontalLayout();
-        final TextField txtModuleName = new TextField();
-        topRow.setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT);
-        topRow.addComponent(new Label("Module:"));
-        Button btnAddModule = new Button("Add module");
+    protected void buildTopRow() {
         btnAddModule.addClickListener(e -> {
+            System.out.println("adding");
             if (txtModuleName.getValue() != null && txtModuleName.getValue().trim().length() != 0) {
                 ModuleEstimationPanel moduleEstimationProvider = new ModuleEstimationPanel(txtModuleName.getValue(), this);
                 estimationProviders.add(moduleEstimationProvider);
-                contentLayout.addComponent(moduleEstimationProvider);
+                componentContainer.addComponent(moduleEstimationProvider);
                 txtModuleName.clear();
             }
         });
-        effortLabel = new Label();
-
-        topRow.addComponents(txtModuleName, btnAddModule, effortLabel);
-        return topRow;
     }
 
     private void updateEffortValue() {
-        effortLabel.setValue(UiLabelHelper.formatPtEffort(totalPtEffort));
+        lblTotalEffort.setValue(UiLabelHelper.formatPtEffort(totalPtEffort));
     }
 
     @Override

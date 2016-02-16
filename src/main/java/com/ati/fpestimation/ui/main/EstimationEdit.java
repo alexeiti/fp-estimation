@@ -4,6 +4,7 @@ import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
 import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
+import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
@@ -11,6 +12,7 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
+import com.vaadin.ui.declarative.Design;
 
 import javax.servlet.annotation.WebServlet;
 import java.util.ArrayList;
@@ -20,53 +22,46 @@ import java.util.List;
 
 
 @Theme("mytheme")
+@DesignRoot
 @Widgetset("com.ati.vaadin.ui.main.FpEstimationWidgetSet")
 public class EstimationEdit extends UI implements EstimationChangedHandler {
 
-    private final VerticalLayout verticalLayout = new VerticalLayout();
-    private ComboBox systemComboBox;
-    private Label effortLabel;
+    private ComboBox txtSystemType;
+    private Label lblEfortTotal;
     private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
     private double totalPtEffort = 0;
+    private Button btnAddSystem;
+    private Layout systemsContainer;
+
+    public EstimationEdit() {
+        Design.read(this);
+    }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        verticalLayout.addComponent(buildTopControlRow());
-        verticalLayout.setWidth(60, Unit.PERCENTAGE);
-        verticalLayout.setMargin(true);
-        verticalLayout.setSpacing(true);
-
-        setContent(verticalLayout);
+        buildTopControlRow();
         updateEffortValue();
+
     }
 
-    private AbstractLayout buildTopControlRow() {
-        HorizontalLayout topRow = new HorizontalLayout();
-        topRow.setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT);
-        topRow.addComponents(new Label("System:"), buildSystemComboBox(Arrays.asList(new String[]{"Tibco", "OfflineOE"})));
-        Button button = new Button("Add System");
-        button.addClickListener(e -> {
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemComboBox.getValue().toString(), this);
+
+    private void buildTopControlRow() {
+        buildSystemComboBox(Arrays.asList(new String[]{"Tibco", "OfflineOE"}));
+        btnAddSystem.addClickListener(e -> {
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(txtSystemType.getValue().toString(), this);
             estimationProviders.add(systemEstimationPanel);
-            verticalLayout.addComponent(systemEstimationPanel);
+            systemsContainer.addComponent(systemEstimationPanel);
 
         });
 
-        effortLabel = new Label();
-        topRow.addComponents(button, effortLabel);
-        return topRow;
     }
 
-    private Field<?> buildSystemComboBox(Collection<?> items) {
-        systemComboBox = new ComboBox();
+    private void buildSystemComboBox(Collection<?> items) {
 
-        systemComboBox.setWidth(200, Unit.PIXELS);
-        systemComboBox.setNullSelectionAllowed(false);
         IndexedContainer container = new IndexedContainer(items);
-        systemComboBox.setContainerDataSource(container);
-        systemComboBox.setRequired(true);
-        systemComboBox.setRequiredError("Pick a system");
-        return systemComboBox;
+        txtSystemType.setContainerDataSource(container);
+        txtSystemType.setRequired(true);
+        txtSystemType.setRequiredError("Pick a system");
     }
 
     @Override
@@ -76,7 +71,7 @@ public class EstimationEdit extends UI implements EstimationChangedHandler {
     }
 
     private void updateEffortValue() {
-        effortLabel.setValue(UiLabelHelper.formatPtEffort(totalPtEffort));
+        lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(totalPtEffort));
     }
 
     @WebServlet(urlPatterns = "/*", name = "FpEstimationServlet", asyncSupported = true)

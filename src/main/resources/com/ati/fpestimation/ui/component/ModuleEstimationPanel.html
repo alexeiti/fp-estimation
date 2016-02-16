@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+<v-panel caption="Some caption" description="SOme description" _id="someName" :middle="" :center="">
+    <v-vertical-layout spacing="true" width="90%" margin="true">
+        <v-table width-full="true" :center="" :expand="2"></v-table>
+        <v-horizontal-layout spacing="true" width-full="true" :middle="" :center="">
+            <v-text-field caption="Component name:"></v-text-field>
+            <v-button plain-text="" :bottom="" :center="">
+                Add entry
+            </v-button>
+            <v-combo-box caption="Factor:" item-caption-mode="id">
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+            </v-combo-box>
+            <v-label caption="Total:" size-auto="true" plain-text="">
+                100 FP
+            </v-label>
+        </v-horizontal-layout>
+    </v-vertical-layout>
+</v-panel>
+</body>
+</html>
