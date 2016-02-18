@@ -42,6 +42,7 @@ public class SystemEstimationPanel extends Panel implements EstimationChangedHan
                 ModuleEstimationPanel moduleEstimationProvider = new ModuleEstimationPanel(txtModuleName.getValue(), this);
                 estimationProviders.add(moduleEstimationProvider);
                 componentContainer.addComponent(moduleEstimationProvider);
+                componentContainer.setComponentAlignment(moduleEstimationProvider,Alignment.TOP_CENTER);
                 txtModuleName.clear();
             }
         });

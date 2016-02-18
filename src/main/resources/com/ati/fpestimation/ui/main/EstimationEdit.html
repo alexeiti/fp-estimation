@@ -4,29 +4,48 @@
 
 </head>
 <body>
-<v-vertical-layout :bottom="" :center="" width="1000px" margin="true" spacing="true">
-    <v-vertical-layout spacing="true" :bottom="" :center="">
+<v-horizontal-layout width="100%" height="100%">
+    <v-vertical-layout :bottom="" :center="" margin="true" spacing="true" id="mainContainer">
+        <v-vertical-layout spacing="true" :bottom="" :center="" width="1000px" id="contentContainer">
 
-        <v-horizontal-layout spacing="true" width="60%" :bottom="" :center="" margin="true" spacing="true">
-            <v-combo-box item-caption-mode="id" id="txtSystemType" :required="">
-                <option>Option 1</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-            </v-combo-box>
-            <v-button plain-text="" id="btnAddSystem">
-                Add Sysytem
-            </v-button>
-            <v-label width="88.35%" plain-text="" _id="lblEfortTotal" :middle="" :right="">
-                Total: 200 PT
-            </v-label>
-        </v-horizontal-layout>
+            <v-vertical-layout spacing="true" :center="" id="infoContainer">
+                <v-panel height="70px">
+                    <v-horizontal-layout size-full="true" margin="true">
+                        <v-label caption="Status:" size-auto="true" plain-text="">
+                            Post2pre
+                        </v-label>
+                        <v-label caption="Stack" size-auto="true" plain-text="">
+                            OrderExecution
+                        </v-label>
+                        <v-label caption="Status" size-auto="true" plain-text="">
+                            Ready For Review
+                        </v-label>
+                    </v-horizontal-layout>
+                </v-panel>
+
+                <v-horizontal-layout spacing="true" width="60%" :bottom="" :center=""
+                                     id="addSystemContainer">
+                    <v-combo-box item-caption-mode="id" id="txtSystemType" :required="">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </v-combo-box>
+                    <v-button plain-text="" id="btnAddSystem">
+                        Add Sysytem
+                    </v-button>
+                    <v-label width="88.35%" plain-text="" _id="lblEfortTotal" :middle="" :right="">
+                        Total: 200 PT
+                    </v-label>
+                </v-horizontal-layout>
 
 
-        <v-vertical-layout id="systemsContainer">
+                <v-vertical-layout id="systemsContainer">
 
 
+                </v-vertical-layout>
+            </v-vertical-layout>
         </v-vertical-layout>
     </v-vertical-layout>
-</v-vertical-layout>
+</v-horizontal-layout>
 </body>
 </html>

@@ -1,27 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
+<v-panel :middle="" :center="" width="95%">
+    <v-vertical-layout :bottom="" :center="" margin="true" spacing="true" id="rootContainer">
+        <v-vertical-layout spacing="true" width="99%" id="contentLayout">
+            <v-horizontal-layout :middle="" width="100%" height="100%" :center="" id="gridContainer">
+            </v-horizontal-layout>
 
-</head>
-<body>
-<v-panel caption="Some caption" description="SOme description" _id="someName" :middle="" :center="">
-    <v-vertical-layout spacing="true" width="90%" margin="true">
-        <v-table width-full="true" :center="" :expand="2"></v-table>
-        <v-horizontal-layout spacing="true" width-full="true" :middle="" :center="">
-            <v-text-field caption="Component name:"></v-text-field>
-            <v-button plain-text="" :bottom="" :center="">
-                Add entry
-            </v-button>
-            <v-combo-box caption="Factor:" item-caption-mode="id">
-                <option>Option 1</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-            </v-combo-box>
-            <v-label caption="Total:" size-auto="true" plain-text="">
-                100 FP
-            </v-label>
-        </v-horizontal-layout>
+            <v-horizontal-layout spacing="true" width-full="true" :middle="" :center="" id="bottomContainer">
+                <v-text-field caption="Component name:"></v-text-field>
+                <v-button plain-text="" :bottom="" :center="" id="btnAddModule">
+                    Add entry
+                </v-button>
+                <v-combo-box caption="Factor:" item-caption-mode="id">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </v-combo-box>
+                <v-label caption="Total:" size-auto="true" plain-text="" id="lblFpTotal">
+                    100 FP
+                </v-label>
+            </v-horizontal-layout>
+        </v-vertical-layout>
     </v-vertical-layout>
 </v-panel>
-</body>
-</html>
+

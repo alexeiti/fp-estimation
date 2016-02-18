@@ -6,26 +6,32 @@ import com.ati.fpestimation.server.FunctionRepository;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
 import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
+import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.converter.Converter;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.*;
+import com.vaadin.ui.declarative.Design;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+@DesignRoot
 public class ModuleEstimationPanel extends Panel implements PtEstimationProvider {
 
-    private static final String TOTAL_STRING_TEMPLATE = "Total: %d FP";
     private FunctionRepository functionRepository;
     private Collection<EstimationEntry> estimationEntriesList = new ArrayList<>();
     private BeanItemContainer<EstimationEntry> beanEstimationContainer;
-    private Grid gridWithDs;
-    private Label totalFpLabel;
+    private Grid gridWithDs = new Grid();
+    private Label lblFpTotal;
     private EstimationChangedHandler moduleEstimationChangedHandler;
     private double ptSum;
+    private Layout gridContainer, contentLayout;
+    private Button btnAddModule;
+    private VerticalLayout rootContainer;
 
 
     //TODO read factor for project
@@ -41,35 +47,19 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         //TODO use spring beans instead
         functionRepository = new FunctionRepository();
 
-        //this.setHeight(100.0f, Sizeable.Unit.PERCENTAGE);
+        Design.read(this);
 
-        final VerticalLayout contentLayout = new VerticalLayout();
-        contentLayout.setWidth(100f, Unit.PERCENTAGE);
-        contentLayout.setMargin(true);
-
-
-        contentLayout.addComponent(buildGridWithDs());
-        contentLayout.addComponent(buildBottomRow());
-
-        this.setContent(contentLayout);
+        gridContainer.addComponent(buildGridWithDs());
+        buildBottomRow();
         updateCalculations();
+        rootContainer.setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
     }
 
-    private HorizontalLayout buildBottomRow() {
-        final HorizontalLayout btmRow = new HorizontalLayout();
-        btmRow.setWidth(100f, Unit.PERCENTAGE);
-        btmRow.setMargin(true);
-
-        Button btnAddModule = new Button("Add row");
+    private void buildBottomRow() {
         btnAddModule.addClickListener(e -> {
             addRow();
         });
-        btmRow.addComponent(btnAddModule);
 
-        Label factorLabel = new Label("Factor: Connector(4,95)");
-        totalFpLabel = new Label();
-        btmRow.addComponents(factorLabel, totalFpLabel);
-        return btmRow;
     }
 
     private Grid buildGridWithDs() {
@@ -77,7 +67,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
                 new BeanItemContainer<EstimationEntry>(EstimationEntry.class, estimationEntriesList);
         gridWithDs = new Grid("Estimations", beanEstimationContainer);
         gridWithDs.setCaption("Double click to edit");
-        gridWithDs.setSizeFull();
+       gridWithDs.setSizeFull();
         gridWithDs.setEditorEnabled(true);
         gridWithDs.setColumnOrder("name", "estimationFunction", "complexity", "cost");
 
@@ -95,7 +85,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
 
     private void updateCalculations() {
         int fpSum = estimationEntriesList.stream().mapToInt(EstimationEntry::getCost).sum();
-        totalFpLabel.setValue(UiLabelHelper.formatFpEffort(fpSum));
+        lblFpTotal.setValue(UiLabelHelper.formatFpEffort(fpSum));
         ptSum = fpSum * factor / 8;
 
         if (moduleEstimationChangedHandler != null) {

@@ -31,7 +31,8 @@ public class EstimationEdit extends UI implements EstimationChangedHandler {
     private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
     private double totalPtEffort = 0;
     private Button btnAddSystem;
-    private Layout systemsContainer;
+    private Layout systemsContainer, addSystemContainer, contentContainer;
+    private VerticalLayout mainContainer;
 
     public EstimationEdit() {
         Design.read(this);
@@ -41,6 +42,7 @@ public class EstimationEdit extends UI implements EstimationChangedHandler {
     protected void init(VaadinRequest vaadinRequest) {
         buildTopControlRow();
         updateEffortValue();
+        mainContainer.setComponentAlignment(contentContainer, Alignment.MIDDLE_CENTER);
 
     }
 
