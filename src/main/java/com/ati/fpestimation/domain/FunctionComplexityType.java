@@ -1,11 +1,11 @@
-package com.ati.fpestimation.server;
+package com.ati.fpestimation.domain;
 
-public enum ComplexityType {
+public enum FunctionComplexityType {
     MAX("maximum"), MIN("minimum"), MID("middle");
 
     private String caption;
 
-    ComplexityType(String caption) {
+    FunctionComplexityType(String caption) {
         this.caption = caption;
     }
 

@@ -39,10 +39,10 @@ public class SystemEstimationPanel extends Panel implements EstimationChangedHan
         btnAddModule.addClickListener(e -> {
             System.out.println("adding");
             if (txtModuleName.getValue() != null && txtModuleName.getValue().trim().length() != 0) {
-                ModuleEstimationPanel moduleEstimationProvider = new ModuleEstimationPanel(txtModuleName.getValue(), this);
-                estimationProviders.add(moduleEstimationProvider);
-                componentContainer.addComponent(moduleEstimationProvider);
-                componentContainer.setComponentAlignment(moduleEstimationProvider,Alignment.TOP_CENTER);
+                ModuleEstimationPanel moduleEstimationPanel = new ModuleEstimationPanel(txtModuleName.getValue(), this);
+                estimationProviders.add(moduleEstimationPanel);
+                componentContainer.addComponent(moduleEstimationPanel);
+                componentContainer.setComponentAlignment(moduleEstimationPanel,Alignment.TOP_CENTER);
                 txtModuleName.clear();
             }
         });

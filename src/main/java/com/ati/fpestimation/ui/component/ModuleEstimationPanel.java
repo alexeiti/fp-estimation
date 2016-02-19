@@ -1,11 +1,11 @@
 package com.ati.fpestimation.ui.component;
 
-import com.ati.fpestimation.server.EstimationEntry;
-import com.ati.fpestimation.server.EstimationFunction;
-import com.ati.fpestimation.server.FunctionRepository;
+import com.ati.fpestimation.domain.EstimationEntry;
+import com.ati.fpestimation.domain.EstimationFunction;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
 import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
+import com.ati.fpestimation.ui.main.EstimationEditView;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @DesignRoot
 public class ModuleEstimationPanel extends Panel implements PtEstimationProvider {
 
-    private FunctionRepository functionRepository;
+
     private Collection<EstimationEntry> estimationEntriesList = new ArrayList<>();
     private BeanItemContainer<EstimationEntry> beanEstimationContainer;
     private Grid gridWithDs = new Grid();
@@ -32,24 +32,27 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     private Layout gridContainer, contentLayout;
     private Button btnAddModule;
     private VerticalLayout rootContainer;
-
+    private ComboBox txtFactor;
 
     //TODO read factor for project
     private double factor = 4.9d;
 
+
     public ModuleEstimationPanel(String caption, EstimationChangedHandler estimationChangedHandler) {
         this(caption);
         moduleEstimationChangedHandler = estimationChangedHandler;
+        //FIXME ATI the text for factor should come from parent and not from self caption
+        buildFactorComboBox(EstimationEditView.getAppStackProvider()
+                .getFactorForApp(this.getCaption()).stream().map(estimationFactor -> estimationFactor.getName()).collect(Collectors.toList()));
     }
 
     public ModuleEstimationPanel(String caption) {
         super(caption);
-        //TODO use spring beans instead
-        functionRepository = new FunctionRepository();
 
         Design.read(this);
 
         gridContainer.addComponent(buildGridWithDs());
+        this.setPrimaryStyleName("v-panel-color3 color2");
         buildBottomRow();
         updateCalculations();
         rootContainer.setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
@@ -67,13 +70,14 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
                 new BeanItemContainer<EstimationEntry>(EstimationEntry.class, estimationEntriesList);
         gridWithDs = new Grid("Estimations", beanEstimationContainer);
         gridWithDs.setCaption("Double click to edit");
-       gridWithDs.setSizeFull();
+        // gridWithDs.setSizeFull();
+        gridWithDs.setWidth(100f, Unit.PERCENTAGE);
         gridWithDs.setEditorEnabled(true);
         gridWithDs.setColumnOrder("name", "estimationFunction", "complexity", "cost");
 
         gridWithDs.getColumn("estimationFunction")
                 .setEditorField(getEditComboBox("Function is required!",
-                        functionRepository.getEstimationFunctions()
+                        EstimationEditView.getFunctionProvider().getEstimationFunctions()
                                 .stream()
                                 .map(EstimationFunction::getName).collect(Collectors.toList())))
                 .setConverter(new EstimationFunctionToStringConverter());
@@ -91,6 +95,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         if (moduleEstimationChangedHandler != null) {
             moduleEstimationChangedHandler.moduleEstimationChanged(ptSum);
         }
+        gridWithDs.setHeightMode(HeightMode.ROW);
 
     }
 
@@ -119,9 +124,9 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
                 .setRenderer(new TextRenderer())
                 .setExpandRatio(4)
                 .setEditorField(getEditComboBox("Complexity is required!",
-                        Arrays.asList(ComplexityType.values())
+                        Arrays.asList(FunctionComplexityType.values())
                                 .stream()
-                                .map(ComplexityType::getCaption).collect(Collectors.toList())));
+                                .map(FunctionComplexityType::getCaption).collect(Collectors.toList())));
 
         grid.addColumn("Value", Integer.class)
                 .setRenderer(new NumberRenderer("%02d"))
@@ -140,6 +145,12 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         System.out.println(estimationEntriesList);
     }
 
+    private void buildFactorComboBox(Collection<?> items) {
+        IndexedContainer container = new IndexedContainer(items);
+        txtFactor.setContainerDataSource(container);
+        txtFactor.setRequired(true);
+        txtFactor.setRequiredError("Pick a system");
+    }
 
     private Field<?> getEditComboBox(String requiredErrorMsg, Collection<?> items) {
         ComboBox comboBox = new ComboBox();

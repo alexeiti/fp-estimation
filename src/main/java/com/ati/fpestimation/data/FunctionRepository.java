@@ -1,5 +1,9 @@
-package com.ati.fpestimation.server;
+package com.ati.fpestimation.data;
 
+
+import com.ati.fpestimation.domain.EstimationFactor;
+import com.ati.fpestimation.domain.EstimationFunction;
+import com.ati.fpestimation.domain.FunctionComplexityType;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,15 +19,15 @@ public class FunctionRepository {
     }
 
     private void initFunctionsWithTestdata() {
-        Map<ComplexityType, Short> dummyWeightMap = new HashMap<>();
+        Map<FunctionComplexityType, Short> dummyWeightMap = new HashMap<>();
         EstimationFunction ef = new EstimationFunction("Internal DB", dummyWeightMap);
-        estimationFunctionsMap.put(ef.getName(),ef);
+        estimationFunctionsMap.put(ef.getName(), ef);
 
         ef = new EstimationFunction("External DB", dummyWeightMap);
-        estimationFunctionsMap.put(ef.getName(),ef);
+        estimationFunctionsMap.put(ef.getName(), ef);
 
         ef = new EstimationFunction("Ausgabe", dummyWeightMap);
-        estimationFunctionsMap.put(ef.getName(),ef);
+        estimationFunctionsMap.put(ef.getName(), ef);
 
     }
 
@@ -35,5 +39,6 @@ public class FunctionRepository {
         return estimationFunctionsMap.values();
 
     }
+
 
 }

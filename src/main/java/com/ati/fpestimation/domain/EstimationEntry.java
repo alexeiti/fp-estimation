@@ -1,16 +1,16 @@
-package com.ati.fpestimation.server;
+package com.ati.fpestimation.domain;
 
 public class EstimationEntry {
     private int cost;
     private String name;
-    private ComplexityType complexity;
+    private FunctionComplexityType complexity;
     // private EstimationFunction estimationFunction;
     private EstimationFunction estimationFunction;
 
     public EstimationEntry() {
         cost= 5;
         name = "SOmething";
-        complexity = ComplexityType.MIN;
+        complexity = FunctionComplexityType.MIN;
     }
 
     public void setCost(int cost) {
@@ -21,7 +21,7 @@ public class EstimationEntry {
         this.name = name;
     }
 
-    public void setComplexity(ComplexityType complexity) {
+    public void setComplexity(FunctionComplexityType complexity) {
         this.complexity = complexity;
     }
 
@@ -42,7 +42,7 @@ public class EstimationEntry {
         return name;
     }
 
-    public ComplexityType getComplexity() {
+    public FunctionComplexityType getComplexity() {
         return complexity;
     }
 
