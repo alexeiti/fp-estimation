@@ -6,6 +6,7 @@ import com.ati.fpestimation.data.FunctionRepository;
 import com.ati.fpestimation.data.impl.DummyFpEstimationRepository;
 import com.ati.fpestimation.data.impl.FileAppStackRepository;
 import com.ati.fpestimation.domain.estimation.FpEstimation;
+import com.ati.fpestimation.domain.estimation.SystemEstimationGroup;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
 import com.ati.fpestimation.ui.callback.PtEstimationProvider;
@@ -57,14 +58,22 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         buildTopControlRow();
+        loadSystemEstimations();
         updateEffortValue();
         mainContainer.setComponentAlignment(contentContainer, Alignment.MIDDLE_CENTER);
 
     }
 
+    private void loadSystemEstimations() {
+        for (SystemEstimationGroup systemEstimation : currentEstimation.getSystemEstimationList()) {
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation.toString(), this);
+            estimationProviders.add(systemEstimationPanel);
+            systemsContainer.addComponent(systemEstimationPanel);
+        }
+    }
+
 
     private void buildTopControlRow() {
-        //FIXME ATI use correct stack and not hardcoded
         lblName.setValue(currentEstimation.getName());
         lblStack.setValue(currentEstimation.getStackType().getName());
         buildSystemComboBox(EstimationEditView.getAppStackProvider().getAllAppsForStack(currentEstimation.getStackType().getId())
