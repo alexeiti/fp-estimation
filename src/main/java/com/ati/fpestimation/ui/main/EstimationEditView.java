@@ -1,11 +1,14 @@
 package com.ati.fpestimation.ui.main;
 
 import com.ati.fpestimation.data.AppStackRepository;
+import com.ati.fpestimation.data.FpEstimationRepository;
 import com.ati.fpestimation.data.FunctionRepository;
+import com.ati.fpestimation.data.impl.DummyFpEstimationRepository;
 import com.ati.fpestimation.data.impl.FileAppStackRepository;
+import com.ati.fpestimation.domain.estimation.FpEstimation;
 import com.ati.fpestimation.ui.UiLabelHelper;
-import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
-import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
+import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
+import com.ati.fpestimation.ui.callback.PtEstimationProvider;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
@@ -31,20 +34,24 @@ import java.util.stream.Collectors;
 public class EstimationEditView extends UI implements EstimationChangedHandler {
 
     private ComboBox txtSystemType;
-    private Label lblEfortTotal;
+    private Label lblEfortTotal, lblStatus, lblName, lblStack;
     private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
-    private double totalPtEffort = 0;
+
     private Button btnAddSystem;
     private Layout systemsContainer, addSystemContainer, contentContainer;
     private VerticalLayout mainContainer;
 
-    private FunctionRepository estimationFunctionRepository;
     private AppStackRepository appStackRepository;
+    private FpEstimation currentEstimation;
+    private FpEstimationRepository estimationRepository;
 
     public EstimationEditView() throws IOException {
         Design.read(this);
-        estimationFunctionRepository = new FunctionRepository();
         appStackRepository = new FileAppStackRepository();
+        //FIXME ATI use real estimation provider
+        estimationRepository = new DummyFpEstimationRepository();
+        //FIXME ATI use correctId
+        currentEstimation = estimationRepository.find("some id");
     }
 
     @Override
@@ -58,7 +65,10 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
 
     private void buildTopControlRow() {
         //FIXME ATI use correct stack and not hardcoded
-        buildSystemComboBox(EstimationEditView.getAppStackProvider().getAllAppsForStack(1).stream().map(appType -> appType.getName()).collect(Collectors.toList()));
+        lblName.setValue(currentEstimation.getName());
+        lblStack.setValue(currentEstimation.getStackType().getName());
+        buildSystemComboBox(EstimationEditView.getAppStackProvider().getAllAppsForStack(currentEstimation.getStackType().getId())
+                .stream().map(appType -> appType.getName()).collect(Collectors.toList()));
         btnAddSystem.addClickListener(e -> {
             SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(txtSystemType.getValue().toString(), this);
             estimationProviders.add(systemEstimationPanel);
@@ -77,12 +87,12 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
 
     @Override
     public void moduleEstimationChanged(double newValue) {
-        totalPtEffort = estimationProviders.stream().mapToDouble(PtEstimationProvider::getPtEffort).sum();
+        //    totalPtEffort = estimationProviders.stream().mapToDouble(PtEstimationProvider::getPtEffort).sum();
         updateEffortValue();
     }
 
     private void updateEffortValue() {
-        lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(totalPtEffort));
+        lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(currentEstimation.getTotalEffortInPt()));
     }
 
     @WebServlet(urlPatterns = "/*", name = "FpEstimationServlet", asyncSupported = true)
@@ -91,11 +101,19 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
 
     }
 
-    public static FunctionRepository getFunctionProvider() {
-        return ((EstimationEditView) getCurrent()).estimationFunctionRepository;
-    }
 
     public static AppStackRepository getAppStackProvider() {
         return ((EstimationEditView) getCurrent()).appStackRepository;
+    }
+
+    public static FpEstimation getCurrentEstimation() {
+        return ((EstimationEditView) getCurrent()).currentEstimation;
+    }
+
+    //FIXME ATI refactor me to separate class
+    private FunctionRepository estimationFunctionRepository = new FunctionRepository();
+
+    public static FunctionRepository getFunctionProvider() {
+        return ((EstimationEditView) getCurrent()).estimationFunctionRepository;
     }
 }

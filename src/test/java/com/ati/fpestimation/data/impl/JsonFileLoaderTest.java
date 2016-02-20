@@ -1,8 +1,8 @@
 package com.ati.fpestimation.data.impl;
 
-import com.ati.fpestimation.domain.AppStackType;
-import com.ati.fpestimation.domain.AppType;
-import com.ati.fpestimation.domain.EstimationFactor;
+import com.ati.fpestimation.domain.kpi.AppStackType;
+import com.ati.fpestimation.domain.kpi.AppType;
+import com.ati.fpestimation.domain.kpi.EstimationFactor;
 import org.junit.Test;
 
 import java.io.IOException;

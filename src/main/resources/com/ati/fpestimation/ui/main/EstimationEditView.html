@@ -11,20 +11,16 @@
             <v-vertical-layout spacing="true" :center="" id="infoContainer">
                 <v-panel height="70px">
                     <v-horizontal-layout size-full="true" margin="true">
-                        <v-label caption="Status:" size-auto="true" plain-text="">
-                            Post2pre
-                        </v-label>
-                        <v-label caption="Stack" size-auto="true" plain-text="">
-                            OrderExecution
-                        </v-label>
-                        <v-label caption="Status" size-auto="true" plain-text="">
-                            Ready For Review
-                        </v-label>
+                        <v-label caption="Name:" size-auto="true" plain-text="" id="lblName"/>
+
+                        <v-label caption="Stack:" size-auto="true" plain-text="" id="lblStack"/>
+
+                        <v-label caption="Status:" size-auto="true" plain-text="" id="lblStatus"/>
+
                     </v-horizontal-layout>
                 </v-panel>
 
-                <v-horizontal-layout spacing="true" width="60%" :bottom="" :center=""
-                                     id="addSystemContainer">
+                <v-horizontal-layout spacing="true" width="60%" :bottom="" :center=""   id="addSystemContainer">
                     <v-combo-box item-caption-mode="id" id="txtSystemType" :required="">
                         <option>Option 1</option>
                         <option>Option 2</option>
@@ -33,9 +29,8 @@
                     <v-button plain-text="" id="btnAddSystem">
                         Add Sysytem
                     </v-button>
-                    <v-label width="88.35%" plain-text="" _id="lblEfortTotal" :middle="" :right="">
-                        Total: 200 PT
-                    </v-label>
+                    <v-label  width="88.35%" plain-text="" _id="lblEfortTotal" :middle="" :right=""/>
+
                 </v-horizontal-layout>
 
 

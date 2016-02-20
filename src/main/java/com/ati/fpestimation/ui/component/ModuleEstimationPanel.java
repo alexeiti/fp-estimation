@@ -1,10 +1,10 @@
 package com.ati.fpestimation.ui.component;
 
-import com.ati.fpestimation.domain.EstimationEntry;
-import com.ati.fpestimation.domain.EstimationFunction;
+import com.ati.fpestimation.domain.estimation.EstimationEntry;
+import com.ati.fpestimation.domain.kpi.EstimationFunction;
 import com.ati.fpestimation.ui.UiLabelHelper;
-import com.ati.fpestimation.ui.com.ati.ui.callback.EstimationChangedHandler;
-import com.ati.fpestimation.ui.com.ati.ui.callback.PtEstimationProvider;
+import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
+import com.ati.fpestimation.ui.callback.PtEstimationProvider;
 import com.ati.fpestimation.ui.main.EstimationEditView;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;

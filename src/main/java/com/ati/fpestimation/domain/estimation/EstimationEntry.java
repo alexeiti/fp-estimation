@@ -1,4 +1,7 @@
-package com.ati.fpestimation.domain;
+package com.ati.fpestimation.domain.estimation;
+
+import com.ati.fpestimation.domain.kpi.EstimationFunction;
+import com.ati.fpestimation.domain.kpi.FunctionComplexityType;
 
 public class EstimationEntry {
     private int cost;

@@ -1,4 +1,4 @@
-package com.ati.fpestimation.domain;
+package com.ati.fpestimation.domain.kpi;
 
 public class AppStackType {
 

@@ -1,4 +1,4 @@
-package com.ati.fpestimation.ui.com.ati.ui.callback;
+package com.ati.fpestimation.ui.callback;
 
 /**
  * Created by alex on 14/02/16.

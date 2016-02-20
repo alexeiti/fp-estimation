@@ -1,9 +1,8 @@
 package com.ati.fpestimation.data;
 
 
-import com.ati.fpestimation.domain.EstimationFactor;
-import com.ati.fpestimation.domain.EstimationFunction;
-import com.ati.fpestimation.domain.FunctionComplexityType;
+import com.ati.fpestimation.domain.kpi.EstimationFunction;
+import com.ati.fpestimation.domain.kpi.FunctionComplexityType;
 
 import java.util.Collection;
 import java.util.HashMap;
