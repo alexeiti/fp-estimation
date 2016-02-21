@@ -8,7 +8,7 @@ import com.ati.fpestimation.data.impl.FileAppStackRepository;
 import com.ati.fpestimation.domain.estimation.FpEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.ui.UiLabelHelper;
-import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
+import com.ati.fpestimation.ui.callback.SystemEstimationChangedHandler;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Theme("mytheme")
 @DesignRoot
 @Widgetset("com.ati.vaadin.ui.main.FpEstimationWidgetSet")
-public class EstimationEditView extends UI implements EstimationChangedHandler {
+public class EstimationEditView extends UI implements SystemEstimationChangedHandler {
 
     private ComboBox txtSystemType;
     private Label lblEfortTotal, lblStatus, lblName, lblStack;
@@ -99,7 +99,7 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
     }
 
     @Override
-    public void systemEstimationChanged(SystemEstimation updatedEstimation) {
+    public void estimationChanged(SystemEstimation updatedEstimation) {
         updateEffortValue();
     }
 

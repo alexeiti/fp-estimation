@@ -10,6 +10,11 @@ public class SystemEstimation {
     private AppType appType;
     private List<ModuleEstimation> estimationEntryList;
 
+    //TODO ATI update the factor with real value
+    //TODO update factor on gui changes
+    private double factor = 4.9d;
+
+
     public SystemEstimation(AppType appType) {
         estimationEntryList = new ArrayList<>();
         this.appType = appType;
@@ -23,7 +28,7 @@ public class SystemEstimation {
 
     public double getTotalEffortInPt() {
         //TODO implement me properly. Add the factor
-        return estimationEntryList.stream().mapToDouble(value -> value.getFpCost()).sum();
+        return estimationEntryList.stream().mapToDouble(ModuleEstimation::getFpCost).sum() * factor / 8;
     }
 
     public String getId() {
@@ -40,5 +45,18 @@ public class SystemEstimation {
 
     public void setAppType(AppType appType) {
         this.appType = appType;
+    }
+
+    public List<ModuleEstimation> getEstimationEntryList() {
+        return estimationEntryList;
+    }
+
+    @Override
+    public String toString() {
+        return "SystemEstimation{" +
+                "id='" + id + '\'' +
+                ", appType=" + appType +
+                ", estimationEntryList=" + estimationEntryList +
+                '}';
     }
 }

@@ -7,14 +7,15 @@ public class ModuleEstimation {
     private List<EstimationEntry> estimationEntryList;
     private String name;
 
+
     public ModuleEstimation(String name) {
         this.name = name;
         this.estimationEntryList = new ArrayList<>();
     }
 
     public double getFpCost() {
-        //TODO ATI implement properly
-        return 34.4d;
+        //TODO ATI implement properly.
+        return estimationEntryList.stream().mapToDouble(EstimationEntry::getCost).sum();
     }
 
     public EstimationEntry addEstimationEntry() {
@@ -37,5 +38,13 @@ public class ModuleEstimation {
 
     public void setEstimationEntryList(List<EstimationEntry> estimationEntryList) {
         this.estimationEntryList = estimationEntryList;
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleEstimation{" +
+                "estimationEntryList=" + estimationEntryList +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
