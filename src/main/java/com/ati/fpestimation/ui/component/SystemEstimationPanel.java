@@ -4,9 +4,14 @@ import com.ati.fpestimation.domain.estimation.ModuleEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
+import com.ati.fpestimation.ui.main.EstimationEditView;
 import com.vaadin.annotations.DesignRoot;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 @DesignRoot
@@ -19,13 +24,14 @@ public class SystemEstimationPanel extends Panel implements EstimationChangedHan
     private Button btnAddModule;
     private TextField txtModuleName;
     private SystemEstimation systemEstimation;
-
+    private ComboBox txtFactor;
 
     public SystemEstimationPanel(SystemEstimation systemEstimation, EstimationChangedHandler estimationChangedHandler) {
         super(systemEstimation.getAppType().getName());
         this.systemEstimation = systemEstimation;
         Design.read(this);
         buildTopRow();
+
         updateEffortValue();
     }
 
@@ -40,6 +46,16 @@ public class SystemEstimationPanel extends Panel implements EstimationChangedHan
                 txtModuleName.clear();
             }
         });
+        //FIXME ATI the text for factor should come from parent and not from self caption
+        buildFactorComboBox(EstimationEditView.getAppStackProvider()
+                .getFactorForApp(this.getCaption()).stream().map(estimationFactor -> estimationFactor.getName()).collect(Collectors.toList()));
+    }
+
+    private void buildFactorComboBox(Collection<?> items) {
+        IndexedContainer container = new IndexedContainer(items);
+        txtFactor.setContainerDataSource(container);
+        txtFactor.setRequired(true);
+        txtFactor.setRequiredError("Pick a system");
     }
 
     private void updateEffortValue() {

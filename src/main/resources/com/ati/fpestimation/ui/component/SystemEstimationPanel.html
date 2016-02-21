@@ -2,10 +2,11 @@
 <v-panel description="OfflineOE" :center="" :middle="" margin="true"  >
     <v-vertical-layout>
         <v-horizontal-layout spacing="true" width-full="true" >
-            <v-text-field id="txtModuleName" :center=""></v-text-field>
+            <v-text-field caption="Module name:" id="txtModuleName" :center=""></v-text-field>
             <v-button plain-text="" :middle="" :center="" id="btnAddModule">
                 Add component
             </v-button>
+            <v-combo-box caption="Factor:" item-caption-mode="id" id="txtFactor"/>
             <v-label size-auto="true" plain-text="" :middle="" :center="" id="lblTotalEffort">
                 Total: 100 PT
             </v-label>

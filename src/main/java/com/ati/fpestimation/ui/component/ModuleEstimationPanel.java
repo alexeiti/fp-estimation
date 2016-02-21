@@ -32,7 +32,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     private Layout gridContainer, contentLayout;
     private Button btnAddModule;
     private VerticalLayout rootContainer;
-    private ComboBox txtFactor;
+
 
     private ModuleEstimation moduleEstimation;
 
@@ -43,7 +43,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     public ModuleEstimationPanel(ModuleEstimation moduleEstimation, EstimationChangedHandler estimationChangedHandler) {
         super(moduleEstimation.getName());
         this.moduleEstimation = moduleEstimation;
-        moduleEstimationChangedHandler = estimationChangedHandler;‚
+        moduleEstimationChangedHandler = estimationChangedHandler;
         Design.read(this);
 
         gridContainer.addComponent(buildGridWithDs());
@@ -51,9 +51,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         buildBottomRow();
         updateCalculations();
         rootContainer.setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
-        //FIXME ATI the text for factor should come from parent and not from self caption
-        buildFactorComboBox(EstimationEditView.getAppStackProvider()
-                .getFactorForApp(this.getCaption()).stream().map(estimationFactor -> estimationFactor.getName()).collect(Collectors.toList()));
+
     }
 
 
@@ -147,12 +145,7 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         System.out.println(moduleEstimation.getEstimationEntryList());
     }
 
-    private void buildFactorComboBox(Collection<?> items) {
-        IndexedContainer container = new IndexedContainer(items);
-        txtFactor.setContainerDataSource(container);
-        txtFactor.setRequired(true);
-        txtFactor.setRequiredError("Pick a system");
-    }
+
 
     private Field<?> getEditComboBox(String requiredErrorMsg, Collection<?> items) {
         ComboBox comboBox = new ComboBox();

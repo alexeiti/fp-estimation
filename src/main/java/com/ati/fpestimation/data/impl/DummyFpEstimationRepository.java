@@ -14,7 +14,10 @@ public class DummyFpEstimationRepository implements FpEstimationRepository {
         try {
             estimation.setStackType(new FileAppStackRepository().getAllStackTypes().get(0));
             estimation.addSystemEstimation( new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
-            estimation.addSystemEstimation( new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
+            SystemEstimation systemEstimation = new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0));
+            systemEstimation.addModuleEstimation("some module1");
+            systemEstimation.addModuleEstimation("some module2");
+            estimation.addSystemEstimation( systemEstimation);
             estimation.addSystemEstimation( new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
         } catch (IOException e) {
             e.printStackTrace();
