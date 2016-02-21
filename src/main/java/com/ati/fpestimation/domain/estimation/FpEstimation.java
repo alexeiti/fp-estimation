@@ -1,6 +1,7 @@
 package com.ati.fpestimation.domain.estimation;
 
 import com.ati.fpestimation.domain.kpi.AppStackType;
+import com.ati.fpestimation.domain.kpi.AppType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +11,21 @@ public class FpEstimation {
     private String id;
     private String name;
     private AppStackType stackType;
-    private List<SystemEstimationGroup> systemEstimationList;
+    private List<SystemEstimation> systemEstimationList;
 
     public FpEstimation() {
         systemEstimationList = new ArrayList<>();
     }
 
     public double getTotalEffortInPt() {
-        return 300.5d;
+        return systemEstimationList.stream().mapToDouble(systemEstimation -> systemEstimation.getTotalEffortInPt()).sum();
+    }
+
+    public SystemEstimation addNewSystemEstimation(AppType appType) {
+        //TODO validate if such appType is already existing in the list
+        SystemEstimation systemEstimation = new SystemEstimation(appType);
+        systemEstimationList.add(systemEstimation);
+        return systemEstimation;
     }
 
     public String getId() {
@@ -44,11 +52,11 @@ public class FpEstimation {
         this.stackType = stackType;
     }
 
-    public List<SystemEstimationGroup> getSystemEstimationList() {
+    public List<SystemEstimation> getSystemEstimationList() {
         return systemEstimationList;
     }
 
-    public void addSystemEstimation(SystemEstimationGroup systemEstimation) {
+    public void addSystemEstimation(SystemEstimation systemEstimation) {
         this.systemEstimationList.add(systemEstimation);
     }
 }

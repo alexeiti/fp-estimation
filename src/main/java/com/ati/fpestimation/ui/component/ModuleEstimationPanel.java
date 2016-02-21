@@ -1,6 +1,7 @@
 package com.ati.fpestimation.ui.component;
 
 import com.ati.fpestimation.domain.estimation.EstimationEntry;
+import com.ati.fpestimation.domain.estimation.ModuleEstimation;
 import com.ati.fpestimation.domain.kpi.EstimationFunction;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
@@ -14,7 +15,6 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ModuleEstimationPanel extends Panel implements PtEstimationProvider {
 
 
-    private Collection<EstimationEntry> estimationEntriesList = new ArrayList<>();
+    //  private Collection<EstimationEntry> estimationEntriesList = new ArrayList<>();
     private BeanItemContainer<EstimationEntry> beanEstimationContainer;
     private Grid gridWithDs = new Grid();
     private Label lblFpTotal;
@@ -34,40 +34,41 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     private VerticalLayout rootContainer;
     private ComboBox txtFactor;
 
+    private ModuleEstimation moduleEstimation;
+
     //TODO read factor for project
     private double factor = 4.9d;
 
 
-    public ModuleEstimationPanel(String caption, EstimationChangedHandler estimationChangedHandler) {
-        this(caption);
-        moduleEstimationChangedHandler = estimationChangedHandler;
+    public ModuleEstimationPanel(ModuleEstimation moduleEstimation, EstimationChangedHandler estimationChangedHandler) {
+        super(moduleEstimation.getName());
+        this.moduleEstimation = moduleEstimation;
+        moduleEstimationChangedHandler = estimationChangedHandler;‚
+        Design.read(this);
+
+        gridContainer.addComponent(buildGridWithDs());
+        //  this.setPrimaryStyleName("v-panel-color3 color2");
+        buildBottomRow();
+        updateCalculations();
+        rootContainer.setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
         //FIXME ATI the text for factor should come from parent and not from self caption
         buildFactorComboBox(EstimationEditView.getAppStackProvider()
                 .getFactorForApp(this.getCaption()).stream().map(estimationFactor -> estimationFactor.getName()).collect(Collectors.toList()));
     }
 
-    public ModuleEstimationPanel(String caption) {
-        super(caption);
-
-        Design.read(this);
-
-        gridContainer.addComponent(buildGridWithDs());
-        this.setPrimaryStyleName("v-panel-color3 color2");
-        buildBottomRow();
-        updateCalculations();
-        rootContainer.setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
-    }
 
     private void buildBottomRow() {
         btnAddModule.addClickListener(e -> {
             addRow();
+
         });
 
     }
 
     private Grid buildGridWithDs() {
+        System.out.println("Initializing module estimation:" + moduleEstimation);
         beanEstimationContainer =
-                new BeanItemContainer<EstimationEntry>(EstimationEntry.class, estimationEntriesList);
+                new BeanItemContainer<EstimationEntry>(EstimationEntry.class, moduleEstimation.getEstimationEntryList());
         gridWithDs = new Grid("Estimations", beanEstimationContainer);
         gridWithDs.setCaption("Double click to edit");
         // gridWithDs.setSizeFull();
@@ -88,12 +89,13 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     }
 
     private void updateCalculations() {
-        int fpSum = estimationEntriesList.stream().mapToInt(EstimationEntry::getCost).sum();
+        int fpSum = moduleEstimation.getEstimationEntryList().stream().mapToInt(EstimationEntry::getCost).sum();
         lblFpTotal.setValue(UiLabelHelper.formatFpEffort(fpSum));
         ptSum = fpSum * factor / 8;
 
         if (moduleEstimationChangedHandler != null) {
-            moduleEstimationChangedHandler.moduleEstimationChanged(ptSum);
+            //TODO ATI fix call and interface with correct arguments
+            //  moduleEstimationChangedHandler.systemEstimationChanged(ptSum);
         }
         gridWithDs.setHeightMode(HeightMode.ROW);
 
@@ -140,9 +142,9 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     private void addRow() {
         gridWithDs.setContainerDataSource(gridWithDs.getContainerDataSource());
         beanEstimationContainer.addBean(new EstimationEntry());
-        estimationEntriesList = beanEstimationContainer.getItemIds();
+        moduleEstimation.setEstimationEntryList(beanEstimationContainer.getItemIds());
         updateCalculations();
-        System.out.println(estimationEntriesList);
+        System.out.println(moduleEstimation.getEstimationEntryList());
     }
 
     private void buildFactorComboBox(Collection<?> items) {

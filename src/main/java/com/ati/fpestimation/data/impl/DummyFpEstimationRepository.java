@@ -2,7 +2,7 @@ package com.ati.fpestimation.data.impl;
 
 import com.ati.fpestimation.data.FpEstimationRepository;
 import com.ati.fpestimation.domain.estimation.FpEstimation;
-import com.ati.fpestimation.domain.estimation.SystemEstimationGroup;
+import com.ati.fpestimation.domain.estimation.SystemEstimation;
 
 import java.io.IOException;
 
@@ -13,9 +13,9 @@ public class DummyFpEstimationRepository implements FpEstimationRepository {
         estimation.setName("Loyalty points");
         try {
             estimation.setStackType(new FileAppStackRepository().getAllStackTypes().get(0));
-            estimation.addSystemEstimation( new SystemEstimationGroup());
-            estimation.addSystemEstimation( new SystemEstimationGroup());
-            estimation.addSystemEstimation( new SystemEstimationGroup());
+            estimation.addSystemEstimation( new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
+            estimation.addSystemEstimation( new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
+            estimation.addSystemEstimation( new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
         } catch (IOException e) {
             e.printStackTrace();
         }

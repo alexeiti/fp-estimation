@@ -6,10 +6,9 @@ import com.ati.fpestimation.data.FunctionRepository;
 import com.ati.fpestimation.data.impl.DummyFpEstimationRepository;
 import com.ati.fpestimation.data.impl.FileAppStackRepository;
 import com.ati.fpestimation.domain.estimation.FpEstimation;
-import com.ati.fpestimation.domain.estimation.SystemEstimationGroup;
+import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.EstimationChangedHandler;
-import com.ati.fpestimation.ui.callback.PtEstimationProvider;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
@@ -23,9 +22,7 @@ import com.vaadin.ui.declarative.Design;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -36,7 +33,7 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
 
     private ComboBox txtSystemType;
     private Label lblEfortTotal, lblStatus, lblName, lblStack;
-    private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
+//    private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
 
     private Button btnAddSystem;
     private Layout systemsContainer, addSystemContainer, contentContainer;
@@ -49,9 +46,9 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
     public EstimationEditView() throws IOException {
         Design.read(this);
         appStackRepository = new FileAppStackRepository();
-        //FIXME ATI use real estimation provider
+        //TODO ATI use real estimation provider
         estimationRepository = new DummyFpEstimationRepository();
-        //FIXME ATI use correctId
+        //TODO ATI use correct Id
         currentEstimation = estimationRepository.find("some id");
     }
 
@@ -65,9 +62,9 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
     }
 
     private void loadSystemEstimations() {
-        for (SystemEstimationGroup systemEstimation : currentEstimation.getSystemEstimationList()) {
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation.toString(), this);
-            estimationProviders.add(systemEstimationPanel);
+        for (SystemEstimation systemEstimation : currentEstimation.getSystemEstimationList()) {
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this);
+            //      estimationProviders.add(systemEstimationPanel);
             systemsContainer.addComponent(systemEstimationPanel);
         }
     }
@@ -79,8 +76,10 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
         buildSystemComboBox(EstimationEditView.getAppStackProvider().getAllAppsForStack(currentEstimation.getStackType().getId())
                 .stream().map(appType -> appType.getName()).collect(Collectors.toList()));
         btnAddSystem.addClickListener(e -> {
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(txtSystemType.getValue().toString(), this);
-            estimationProviders.add(systemEstimationPanel);
+            //TODO ATI read app type from combobox
+            SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this);
+            //  estimationProviders.add(systemEstimationPanel);
             systemsContainer.addComponent(systemEstimationPanel);
 
         });
@@ -94,14 +93,14 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
         txtSystemType.setRequiredError("Pick a system");
     }
 
-    @Override
-    public void moduleEstimationChanged(double newValue) {
-        //    totalPtEffort = estimationProviders.stream().mapToDouble(PtEstimationProvider::getPtEffort).sum();
-        updateEffortValue();
-    }
 
     private void updateEffortValue() {
         lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(currentEstimation.getTotalEffortInPt()));
+    }
+
+    @Override
+    public void systemEstimationChanged(SystemEstimation updatedEstimation) {
+        updateEffortValue();
     }
 
     @WebServlet(urlPatterns = "/*", name = "FpEstimationServlet", asyncSupported = true)
@@ -119,7 +118,7 @@ public class EstimationEditView extends UI implements EstimationChangedHandler {
         return ((EstimationEditView) getCurrent()).currentEstimation;
     }
 
-    //FIXME ATI refactor me to separate class
+    //TODO ATI move method to AppStackRepository
     private FunctionRepository estimationFunctionRepository = new FunctionRepository();
 
     public static FunctionRepository getFunctionProvider() {
