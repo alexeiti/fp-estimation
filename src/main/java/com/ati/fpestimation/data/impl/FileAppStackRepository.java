@@ -33,9 +33,8 @@ public class FileAppStackRepository implements AppStackRepository {
     }
 
     @Override
-    public Collection<EstimationFactor> getFactorForApp(String appName) {
-        List<Integer> factorsForApp = appTypes.stream().filter(appType -> appType.getName().equals(appName))
-                .flatMap(appType -> appType.getEstimationFactors().stream()).collect(Collectors.toList());
+    public Collection<EstimationFactor> getFactorForApp(AppType appType) {
+        List<Integer> factorsForApp = appType.getEstimationFactors();
 
         return estimationFactors.stream().filter(estimationFactor -> factorsForApp.contains(new Integer(estimationFactor.getId()))).collect(Collectors.toList());
     }

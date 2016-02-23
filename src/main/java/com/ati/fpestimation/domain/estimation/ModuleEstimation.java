@@ -18,8 +18,8 @@ public class ModuleEstimation {
         return estimationEntryList.stream().mapToDouble(EstimationEntry::getCost).sum();
     }
 
-    public EstimationEntry addEstimationEntry() {
-        EstimationEntry estimationEntry = new EstimationEntry();
+    public EstimationEntry addEstimationEntry(String name) {
+        EstimationEntry estimationEntry = new EstimationEntry(name);
         estimationEntryList.add(estimationEntry);
         return estimationEntry;
     }
@@ -39,6 +39,7 @@ public class ModuleEstimation {
     public void setEstimationEntryList(List<EstimationEntry> estimationEntryList) {
         this.estimationEntryList = estimationEntryList;
     }
+
 
     @Override
     public String toString() {

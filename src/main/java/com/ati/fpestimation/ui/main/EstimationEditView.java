@@ -14,15 +14,19 @@ import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
+import com.vaadin.ui.themes.ValoTheme;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -50,20 +54,40 @@ public class EstimationEditView extends UI implements SystemEstimationChangedHan
         estimationRepository = new DummyFpEstimationRepository();
         //TODO ATI use correct Id
         currentEstimation = estimationRepository.find("some id");
+
+    }
+//*********************
+
+    private void test() {
+        List<sample> sapleList = new ArrayList();
+        sapleList.add(new sample(20, "alex", "male"));
+        sapleList.add(new sample(20, "vika", "female"));
+        Table table = new Table("Sample table");
+        BeanItemContainer beanEstimationContainer =
+                new BeanItemContainer<sample>(sample.class, sapleList);
+        table.setContainerDataSource(beanEstimationContainer);
+        table.addStyleName(ValoTheme.TABLE_BORDERLESS);
+        table.addStyleName(ValoTheme.TABLE_NO_STRIPES);
+        table.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
+        table.addStyleName(ValoTheme.TABLE_SMALL);
+
+        table.setEditable(true);
+        systemsContainer.addComponent(table);
     }
 
+    //*********************
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         buildTopControlRow();
         loadSystemEstimations();
         updateEffortValue();
         mainContainer.setComponentAlignment(contentContainer, Alignment.MIDDLE_CENTER);
-
+        //test();
     }
 
     private void loadSystemEstimations() {
         for (SystemEstimation systemEstimation : currentEstimation.getSystemEstimationList()) {
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this);
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this, this.currentEstimation.getStackType());
             //      estimationProviders.add(systemEstimationPanel);
             systemsContainer.addComponent(systemEstimationPanel);
         }
@@ -78,7 +102,7 @@ public class EstimationEditView extends UI implements SystemEstimationChangedHan
         btnAddSystem.addClickListener(e -> {
             //TODO ATI read app type from combobox
             SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this);
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this, currentEstimation.getStackType());
             //  estimationProviders.add(systemEstimationPanel);
             systemsContainer.addComponent(systemEstimationPanel);
 

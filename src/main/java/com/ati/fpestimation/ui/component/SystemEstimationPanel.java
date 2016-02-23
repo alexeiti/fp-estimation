@@ -2,18 +2,21 @@ package com.ati.fpestimation.ui.component;
 
 import com.ati.fpestimation.domain.estimation.ModuleEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
+import com.ati.fpestimation.domain.kpi.AppStackType;
 import com.ati.fpestimation.domain.kpi.EstimationFactor;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.ModuleEstimationChangedHandler;
 import com.ati.fpestimation.ui.callback.SystemEstimationChangedHandler;
 import com.ati.fpestimation.ui.main.EstimationEditView;
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
+import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 
 @DesignRoot
@@ -27,14 +30,18 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
     private TextField txtModuleName;
     private SystemEstimation systemEstimation;
     private ComboBox txtFactor;
+    //TODO check if stack is needed here
+    private AppStackType appStackType;
 
-    public SystemEstimationPanel(SystemEstimation systemEstimation, SystemEstimationChangedHandler systemEstimationChangedHandler) {
+    public SystemEstimationPanel(SystemEstimation systemEstimation, SystemEstimationChangedHandler systemEstimationChangedHandler, AppStackType appStack) {
         super(systemEstimation.getAppType().getName());
         this.systemEstimation = systemEstimation;
         this.systemEstimationChangedHandler = systemEstimationChangedHandler;
+        this.appStackType = appStack;
         Design.read(this);
         initTopRow();
         preloadEstimationData();
+        this.addStyleName(ValoTheme.PANEL_WELL);
 
     }
 
@@ -45,9 +52,8 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
 
     protected void initTopRow() {
         btnAddModule.addClickListener(e -> addModuleEventHandler());
-        //FIXME ATI the text for factor should come from parent and not from self caption
         buildFactorComboBox(EstimationEditView.getAppStackProvider()
-                .getFactorForApp(this.getCaption()).stream().map(EstimationFactor::getName).collect(Collectors.toList()));
+                .getFactorForApp(systemEstimation.getAppType()));
     }
 
     private void addModuleEventHandler() {
@@ -65,10 +71,24 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
     }
 
     private void buildFactorComboBox(Collection<?> items) {
-        IndexedContainer container = new IndexedContainer(items);
+        BeanItemContainer container = new BeanItemContainer(EstimationFactor.class, items);
         txtFactor.setContainerDataSource(container);
+        txtFactor.setNullSelectionAllowed(false);
         txtFactor.setRequired(true);
         txtFactor.setRequiredError("Pick a system");
+        txtFactor.setItemCaptionPropertyId("name");
+        if (container.firstItemId() != null && systemEstimation.getEstimationFactor() == null) {
+            txtFactor.select(container.firstItemId());
+            systemEstimation.setEstimationFactor((EstimationFactor) txtFactor.getValue());
+            estimationChanged();
+        }
+        txtFactor.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                systemEstimation.setEstimationFactor((EstimationFactor) txtFactor.getValue());
+                estimationChanged();
+            }
+        });
     }
 
     private void updateEffortValue() {
@@ -77,7 +97,7 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
 
 
     @Override
-    public void estimationChanged(ModuleEstimation updatedEstimation) {
+    public void estimationChanged() {
 
         if (systemEstimationChangedHandler != null) {
             systemEstimationChangedHandler.estimationChanged(systemEstimation);

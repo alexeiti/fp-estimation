@@ -3,6 +3,8 @@ package com.ati.fpestimation.domain.estimation;
 import com.ati.fpestimation.domain.kpi.EstimationFunction;
 import com.ati.fpestimation.domain.kpi.FunctionComplexityType;
 
+import java.util.Random;
+
 public class EstimationEntry {
     private int cost;
     private String name;
@@ -10,15 +12,14 @@ public class EstimationEntry {
     // private EstimationFunction estimationFunction;
     private EstimationFunction estimationFunction;
 
-    public EstimationEntry() {
-        cost= 5;
-        name = "SOmething";
+    public EstimationEntry(String name) {
+        //TODO remove dummy values
+        cost = 5;
+        this.name = name;
+        estimationFunction = new EstimationFunction("External DB", null);
         complexity = FunctionComplexityType.MIN;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -30,7 +31,9 @@ public class EstimationEntry {
 
 
     public int getCost() {
-        return cost;
+        //TODO Ati return correctly calculated cos
+        int costt = (int)( Math.random() *50);
+        return 10;
     }
 
     public EstimationFunction getEstimationFunction() {
@@ -53,7 +56,7 @@ public class EstimationEntry {
     @Override
     public String toString() {
         return "EstimationEntry{" +
-                "cost=" + cost +
+                "cost=" + getCost() +
                 ", name='" + name + '\'' +
                 ", complexity=" + complexity +
                 ", estimationFunction=" + estimationFunction +

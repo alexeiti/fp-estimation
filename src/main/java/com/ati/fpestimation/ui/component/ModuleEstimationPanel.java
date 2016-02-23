@@ -2,36 +2,25 @@ package com.ati.fpestimation.ui.component;
 
 import com.ati.fpestimation.domain.estimation.EstimationEntry;
 import com.ati.fpestimation.domain.estimation.ModuleEstimation;
-import com.ati.fpestimation.domain.kpi.EstimationFunction;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.ModuleEstimationChangedHandler;
-import com.ati.fpestimation.ui.callback.PtEstimationProvider;
-import com.ati.fpestimation.ui.main.EstimationEditView;
+import com.google.gwt.user.client.ui.TextBox;
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.converter.Converter;
-import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
-
-import java.util.Collection;
-import java.util.Locale;
-import java.util.stream.Collectors;
+import com.vaadin.ui.themes.ValoTheme;
 
 @DesignRoot
-public class ModuleEstimationPanel extends Panel implements PtEstimationProvider {
+public class ModuleEstimationPanel extends Panel {
 
 
-    //  private Collection<EstimationEntry> estimationEntriesList = new ArrayList<>();
-    private BeanItemContainer<EstimationEntry> beanEstimationContainer;
-    private Grid gridWithDs = new Grid();
+    private EstimationEntryGrid estimationEntryGrid = new EstimationEntryGrid();
     private Label lblFpTotal;
     private ModuleEstimationChangedHandler moduleEstimationChangedHandler;
-    private double ptSum;
     private Layout gridContainer, contentLayout;
     private Button btnAddModule;
     private VerticalLayout rootContainer;
+    private TextField txtComponentName;
 
 
     private ModuleEstimation moduleEstimation;
@@ -41,12 +30,13 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         this.moduleEstimation = moduleEstimation;
         this.moduleEstimationChangedHandler = moduleEstimationChangedHandler;
         Design.read(this);
-
-        gridContainer.addComponent(buildGridWithDs());
+        estimationEntryGrid = new EstimationEntryGrid(moduleEstimation.getEstimationEntryList());
+        gridContainer.addComponent(estimationEntryGrid);
         //  this.setPrimaryStyleName("v-panel-color3 color2");
         initBottomRow();
         updateCalculations();
         rootContainer.setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
+        btnAddModule.addStyleName(ValoTheme.BUTTON_PRIMARY);
 
     }
 
@@ -54,36 +44,12 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
         btnAddModule.addClickListener(e -> addRow());
     }
 
-    private Grid buildGridWithDs() {
-        System.out.println("Initializing module estimation:" + moduleEstimation);
-        beanEstimationContainer =
-                new BeanItemContainer<EstimationEntry>(EstimationEntry.class, moduleEstimation.getEstimationEntryList());
-        gridWithDs = new Grid("Estimations", beanEstimationContainer);
-        gridWithDs.setCaption("Double click to edit");
-        // gridWithDs.setSizeFull();
-        gridWithDs.setWidth(100f, Unit.PERCENTAGE);
-        gridWithDs.setEditorEnabled(true);
-        gridWithDs.setColumnOrder("name", "estimationFunction", "complexity", "cost");
-
-        gridWithDs.getColumn("estimationFunction")
-                .setEditorField(getEditComboBox("Function is required!",
-                        EstimationEditView.getFunctionProvider().getEstimationFunctions()
-                                .stream()
-                                .map(EstimationFunction::getName).collect(Collectors.toList())))
-                .setConverter(new EstimationFunctionToStringConverter());
-
-        gridWithDs.setHeightMode(HeightMode.ROW);
-        System.out.println(gridWithDs.getColumn("estimationFunction").getConverter());
-        System.out.println(gridWithDs.getColumns());
-        return gridWithDs;
-    }
-
     private void updateCalculations() {
         int fpSum = moduleEstimation.getEstimationEntryList().stream().mapToInt(EstimationEntry::getCost).sum();
         lblFpTotal.setValue(UiLabelHelper.formatFpEffort(fpSum));
         //System.out.println("updating estimation " + moduleEstimationChangedHandler);
         if (moduleEstimationChangedHandler != null) {
-            moduleEstimationChangedHandler.estimationChanged(moduleEstimation);
+            moduleEstimationChangedHandler.estimationChanged();
         }
 
     }
@@ -127,57 +93,9 @@ public class ModuleEstimationPanel extends Panel implements PtEstimationProvider
     }
 
     private void addRow() {
-        gridWithDs.setContainerDataSource(gridWithDs.getContainerDataSource());
-        beanEstimationContainer.addBean(new EstimationEntry());
-        moduleEstimation.setEstimationEntryList(beanEstimationContainer.getItemIds());
+        moduleEstimation.setEstimationEntryList(estimationEntryGrid.addEstimationEntry(txtComponentName.getValue()));
         updateCalculations();
         System.out.println(moduleEstimation.getEstimationEntryList());
-    }
-
-
-    private Field<?> getEditComboBox(String requiredErrorMsg, Collection<?> items) {
-        ComboBox comboBox = new ComboBox();
-        comboBox.setNullSelectionAllowed(false);
-        IndexedContainer container = new IndexedContainer(items);
-        comboBox.setContainerDataSource(container);
-        comboBox.setRequired(true);
-        comboBox.setRequiredError(requiredErrorMsg);
-        return comboBox;
-    }
-
-    @Override
-    public double getPtEffort() {
-        return ptSum;
-    }
-
-
-    class EstimationFunctionToStringConverter implements Converter<String, EstimationFunction> {
-
-
-        @Override
-        public EstimationFunction convertToModel(String s, Class<? extends EstimationFunction> aClass, Locale locale) throws ConversionException {
-            System.out.println("Converting " + s);
-            return new EstimationFunction("External DB", null);
-
-        }
-
-        @Override
-        public String convertToPresentation(EstimationFunction estimationFunction, Class<? extends String> aClass, Locale locale) throws ConversionException {
-            if (estimationFunction != null)
-                return estimationFunction.getName();
-            else
-                return null;
-        }
-
-        @Override
-        public Class<EstimationFunction> getModelType() {
-            return EstimationFunction.class;
-        }
-
-        @Override
-        public Class<String> getPresentationType() {
-            return String.class;
-        }
     }
 
 

@@ -13,6 +13,6 @@ public interface AppStackRepository {
 
     List<AppType> getAllAppsForStack(int stackId);
 
-    Collection<EstimationFactor> getFactorForApp(String appName);
+    Collection<EstimationFactor> getFactorForApp(AppType appType);
 
 }

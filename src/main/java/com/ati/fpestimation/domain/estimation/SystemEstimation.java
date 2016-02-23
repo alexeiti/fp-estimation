@@ -1,6 +1,7 @@
 package com.ati.fpestimation.domain.estimation;
 
 import com.ati.fpestimation.domain.kpi.AppType;
+import com.ati.fpestimation.domain.kpi.EstimationFactor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,10 @@ public class SystemEstimation {
     private AppType appType;
     private List<ModuleEstimation> estimationEntryList;
 
+    private EstimationFactor estimationFactor;
+
     //TODO ATI update the factor with real value
     //TODO update factor on gui changes
-    private double factor = 4.9d;
 
 
     public SystemEstimation(AppType appType) {
@@ -27,8 +29,10 @@ public class SystemEstimation {
     }
 
     public double getTotalEffortInPt() {
-        //TODO implement me properly. Add the factor
-        return estimationEntryList.stream().mapToDouble(ModuleEstimation::getFpCost).sum() * factor / 8;
+        //TODO ATI check if factor is mandatory and always set
+        if (estimationFactor != null)
+            return estimationEntryList.stream().mapToDouble(ModuleEstimation::getFpCost).sum() * estimationFactor.getFactor() / 8;
+        return 0;
     }
 
     public String getId() {
@@ -49,6 +53,14 @@ public class SystemEstimation {
 
     public List<ModuleEstimation> getEstimationEntryList() {
         return estimationEntryList;
+    }
+
+    public EstimationFactor getEstimationFactor() {
+        return estimationFactor;
+    }
+
+    public void setEstimationFactor(EstimationFactor estimationFactor) {
+        this.estimationFactor = estimationFactor;
     }
 
     @Override

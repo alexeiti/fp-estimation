@@ -1,8 +1,6 @@
 package com.ati.fpestimation.ui.callback;
 
-import com.ati.fpestimation.domain.estimation.ModuleEstimation;
-
 public interface ModuleEstimationChangedHandler {
-    void estimationChanged(ModuleEstimation updatedEstimation);
+    void estimationChanged();
     //TODO ATI add method for delete of the estimation
 }

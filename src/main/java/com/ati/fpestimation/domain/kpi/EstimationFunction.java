@@ -19,4 +19,9 @@ public class EstimationFunction {
     public Map<FunctionComplexityType, Short> getWeightMap() {
         return weightMap;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
