@@ -7,6 +7,7 @@ import com.ati.fpestimation.data.impl.DummyFpEstimationRepository;
 import com.ati.fpestimation.data.impl.FileAppStackRepository;
 import com.ati.fpestimation.domain.estimation.FpEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
+import com.ati.fpestimation.exception.ValidationException;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.callback.SystemEstimationChangedHandler;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
@@ -100,14 +101,21 @@ public class EstimationEditView extends UI implements SystemEstimationChangedHan
         buildSystemComboBox(EstimationEditView.getAppStackProvider().getAllAppsForStack(currentEstimation.getStackType().getId())
                 .stream().map(appType -> appType.getName()).collect(Collectors.toList()));
         btnAddSystem.addClickListener(e -> {
-            //TODO ATI read app type from combobox
+            addSystemEstimation();
+        });
+
+    }
+
+    private void addSystemEstimation() {
+        //TODO ATI read app type from combobox
+        try {
             SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
             SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this, currentEstimation.getStackType());
             //  estimationProviders.add(systemEstimationPanel);
             systemsContainer.addComponent(systemEstimationPanel);
-
-        });
-
+        } catch (ValidationException e1) {
+            Notification.show("", e1.getMessage(), Notification.Type.ERROR_MESSAGE);
+        }
     }
 
     private void buildSystemComboBox(Collection<?> items) {

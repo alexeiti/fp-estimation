@@ -30,7 +30,8 @@ public class ModuleEstimationPanel extends Panel {
         this.moduleEstimation = moduleEstimation;
         this.moduleEstimationChangedHandler = moduleEstimationChangedHandler;
         Design.read(this);
-        estimationEntryGrid = new EstimationEntryGrid(moduleEstimation.getEstimationEntryList());
+        //TODO check how to set the estimation type? Probably from the factor combobox
+        estimationEntryGrid = new EstimationEntryGrid(moduleEstimation.getEstimationEntryList(),false);
         gridContainer.addComponent(estimationEntryGrid);
         //  this.setPrimaryStyleName("v-panel-color3 color2");
         initBottomRow();

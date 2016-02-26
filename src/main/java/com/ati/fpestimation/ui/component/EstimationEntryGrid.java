@@ -10,7 +10,6 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,30 +18,36 @@ import java.util.Locale;
 public class EstimationEntryGrid extends Grid {
 
     private BeanItemContainer<EstimationEntry> beanEstimationContainer;
+    private boolean isManualEstimationGrid;
+
+    private class Columns {
+        private static final String NAME = "name", COST = "cost", MANUAL = "manual", COMPLEXITY = "complexity", ESTIMATION_FUNCTION = "estimationFunction";
+    }
 
     //Should not be used. Used as a WA to provide a dummy value for bounding to declarative UI.
     @Deprecated
     public EstimationEntryGrid() {
     }
 
-    public EstimationEntryGrid(List<EstimationEntry> dataSource) {
+    public EstimationEntryGrid(List<EstimationEntry> dataSource, boolean isManualEstimation) {
         beanEstimationContainer =
                 new BeanItemContainer<EstimationEntry>(EstimationEntry.class, dataSource);
+
         this.setContainerDataSource(beanEstimationContainer);
+        this.isManualEstimationGrid = isManualEstimation;
 
         this.setCaption("Double click to edit");
         this.setSizeFull();
         this.setWidth(100f, Unit.PERCENTAGE);
         this.setEditorEnabled(true);
-        this.setColumnOrder("name", "estimationFunction", "complexity", "cost");
-
-        this.getColumn("estimationFunction")
+        this.setColumnOrder(Columns.NAME, Columns.ESTIMATION_FUNCTION, Columns.COMPLEXITY, Columns.COST);
+        this.getColumn(Columns.COST).setEditable(isManualEstimation);
+        this.getColumn(Columns.ESTIMATION_FUNCTION)
                 .setEditorField(getEditComboBox("Function is required!",
                         EstimationEditView.getFunctionProvider().getEstimationFunctions()
                 ));
-        //    .setConverter(new EstimationFunctionToStringConverter());
 
-
+        this.removeColumn(Columns.MANUAL);
         this.setHeightMode(HeightMode.ROW);
         this.setEditorEnabled(true);
     }
@@ -62,43 +67,12 @@ public class EstimationEntryGrid extends Grid {
     public List<EstimationEntry> addEstimationEntry(String caption) {
         //TODO ATI check if it is necessary
         this.setContainerDataSource(this.getContainerDataSource());
-        beanEstimationContainer.addBean(new EstimationEntry(caption));
+        beanEstimationContainer.addBean(new EstimationEntry(caption, isManualEstimationGrid));
         return beanEstimationContainer.getItemIds();
     }
 
 
-    class ObjectTypeEstimationFunctionConverter implements Converter<Object, Object> {
-        @Override
-        public Object convertToModel(Object value, Class<?> targetType, Locale locale) throws
-                Converter.ConversionException {
-            //TODO ATI use function from repository
-            if (value != null)
-                return new EstimationFunction(value.toString(), null);
-            else
-                return null;
-        }
 
-        @Override
-        public Object convertToPresentation(Object value, Class<?> targetType, Locale locale) throws
-                Converter.ConversionException {
-            if (value != null)
-                return value.toString();
-            else
-                return "";
-        }
-
-        @Override
-        public Class<Object> getModelType() {
-            return Object.class;
-        }
-
-        @Override
-        public Class<Object> getPresentationType() {
-            return Object.class;
-        }
-
-
-    }
 
 
 }

@@ -17,8 +17,8 @@ public class DummyFpEstimationRepository implements FpEstimationRepository {
             estimation.addSystemEstimation(new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));
             SystemEstimation systemEstimation = new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0));
             ModuleEstimation moduleEstimation1 = systemEstimation.addModuleEstimation("some module1");
-            moduleEstimation1.addEstimationEntry("Create process");
-            moduleEstimation1.addEstimationEntry("Delete ws");
+            moduleEstimation1.addEstimationEntry("Create process",false);
+            moduleEstimation1.addEstimationEntry("Delete ws",false);
             systemEstimation.addModuleEstimation("some module2");
             estimation.addSystemEstimation(systemEstimation);
             estimation.addSystemEstimation(new SystemEstimation(new FileAppStackRepository().getAllAppsForStack(1).get(0)));

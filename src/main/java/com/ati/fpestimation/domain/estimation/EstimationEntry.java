@@ -3,19 +3,19 @@ package com.ati.fpestimation.domain.estimation;
 import com.ati.fpestimation.domain.kpi.EstimationFunction;
 import com.ati.fpestimation.domain.kpi.FunctionComplexityType;
 
-import java.util.Random;
-
 public class EstimationEntry {
     private int cost;
+    private boolean manual;
     private String name;
     private FunctionComplexityType complexity;
     // private EstimationFunction estimationFunction;
     private EstimationFunction estimationFunction;
 
-    public EstimationEntry(String name) {
+    public EstimationEntry(String name, boolean isManual) {
         //TODO remove dummy values
         cost = 5;
         this.name = name;
+        this.manual = isManual;
         estimationFunction = new EstimationFunction("External DB", null);
         complexity = FunctionComplexityType.MIN;
     }
@@ -32,8 +32,11 @@ public class EstimationEntry {
 
     public int getCost() {
         //TODO Ati return correctly calculated cos
-        int costt = (int)( Math.random() *50);
-        return 10;
+        // int costt = (int) (Math.random() * 50);
+        if (isManual())
+            return cost;
+        else
+            return 10;
     }
 
     public EstimationFunction getEstimationFunction() {
@@ -50,6 +53,14 @@ public class EstimationEntry {
 
     public FunctionComplexityType getComplexity() {
         return complexity;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public boolean isManual() {
+        return manual;
     }
 
 

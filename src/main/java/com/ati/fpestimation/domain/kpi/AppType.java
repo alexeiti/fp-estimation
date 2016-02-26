@@ -40,6 +40,19 @@ public class AppType {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AppType appType = (AppType) o;
+
+        if (stackTypeId != appType.stackTypeId) return false;
+        return !(name != null ? !name.equals(appType.name) : appType.name != null);
+
+    }
+
+
+    @Override
     public String toString() {
         return "AppType{" +
                 "name='" + name + '\'' +

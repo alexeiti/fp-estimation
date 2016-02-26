@@ -18,8 +18,8 @@ public class ModuleEstimation {
         return estimationEntryList.stream().mapToDouble(EstimationEntry::getCost).sum();
     }
 
-    public EstimationEntry addEstimationEntry(String name) {
-        EstimationEntry estimationEntry = new EstimationEntry(name);
+    public EstimationEntry addEstimationEntry(String name, boolean isManual) {
+        EstimationEntry estimationEntry = new EstimationEntry(name, isManual);
         estimationEntryList.add(estimationEntry);
         return estimationEntry;
     }
