@@ -34,6 +34,10 @@ public class EstimationFactor {
         return name;
     }
 
+    public String getUiName() {
+        return name + " (" + factor + ")";
+    }
+
     public void setName(String name) {
         this.name = name;
     }

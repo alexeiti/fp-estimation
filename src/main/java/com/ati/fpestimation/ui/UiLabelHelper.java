@@ -1,8 +1,7 @@
 package com.ati.fpestimation.ui;
 
-/**
- * Created by alex on 14/02/16.
- */
+import com.vaadin.ui.TextField;
+
 public class UiLabelHelper {
 
     public static final String formatFpEffort(int effort) {
@@ -14,4 +13,7 @@ public class UiLabelHelper {
     }
 
 
+    public static boolean isValueSet(TextField tf) {
+        return (tf.getValue() != null && tf.getValue().trim().length() != 0);
+    }
 }

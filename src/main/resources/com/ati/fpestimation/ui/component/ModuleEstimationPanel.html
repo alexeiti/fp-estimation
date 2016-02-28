@@ -1,19 +1,19 @@
 <v-panel :middle="" :center="" width="95%">
+
     <v-vertical-layout :bottom="" :center="" margin="true" spacing="true" id="rootContainer">
+        <v-text-field width="100%" id="txtModuleName"/>
         <v-vertical-layout spacing="true" width="99%" id="contentLayout">
-            <v-horizontal-layout :middle="" width="100%" height="100%" :center="" id="gridContainer">
-            </v-horizontal-layout>
+            <v-horizontal-layout :middle="" width="100%" height="100%" :center="" id="gridContainer"/>
 
             <v-horizontal-layout spacing="true" width-full="true" :middle="" :center="" id="bottomContainer">
-                <v-text-field caption="Component name:" width="400px" :expand="0" id="txtComponentName"></v-text-field>
-                <v-button plain-text="" :bottom="" :center="" id="btnAddModule">
-                    Add entry
-                </v-button>
+                <v-css-layout id="componentNameGroup">
+                    <v-text-field width="300px" :expand="0" id="txtEntryName"/>
+                    <v-button plain-text="" :bottom="" :center="" id="btnAddRow">Add</v-button>
+                </v-css-layout>
+                <!--  <v-button plain-text="" :bottom="" :center="" id="btnRemoveRow">Remove</v-button>
+  -->
 
-
-                <v-label size-auto="true" caption="Total"  plain-text="" id="lblFpTotal">
-                    100 FP
-                </v-label>
+                <v-label size-auto="true" :bottom="" :center="" plain-text="" id="lblFpTotal">0 FP</v-label>
             </v-horizontal-layout>
         </v-vertical-layout>
     </v-vertical-layout>

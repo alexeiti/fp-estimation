@@ -16,17 +16,15 @@
                         <v-label caption="Stack:" size-auto="true" plain-text="" id="lblStack"/>
 
                         <v-label caption="Status:" size-auto="true" plain-text="" id="lblStatus"/>
-                        <v-label    plain-text="" _id="lblEfortTotal" :middle="" :right=""/>
+                        <v-label  plain-text="" _id="lblEfortTotal" :middle="" :center
+                                =""/>
 
                     </v-horizontal-layout>
                 </v-panel>
 
                 <v-horizontal-layout spacing="true" width="60%" :bottom="" :center=""   id="addSystemContainer">
-                    <v-combo-box item-caption-mode="id" id="txtSystemType" :required="">
-                        <option>Option 1</option>
-                        <option>Option 2</option>
-                        <option>Option 3</option>
-                    </v-combo-box>
+                    <v-combo-box item-caption-mode="id" id="txtSystemType" :required=""  width="200px" />
+                    >
                     <v-button plain-text="" id="btnAddSystem">
                         Add System
                     </v-button>
@@ -35,7 +33,7 @@
                 </v-horizontal-layout>
 
 
-                <v-vertical-layout id="systemsContainer">
+                <v-vertical-layout id="systemsContainer" spacing="true">
 
 
                 </v-vertical-layout>

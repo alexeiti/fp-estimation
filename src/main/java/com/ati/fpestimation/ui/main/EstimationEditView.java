@@ -9,7 +9,6 @@ import com.ati.fpestimation.domain.estimation.FpEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.exception.ValidationException;
 import com.ati.fpestimation.ui.UiLabelHelper;
-import com.ati.fpestimation.ui.callback.SystemEstimationChangedHandler;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
 @Theme("mytheme")
 @DesignRoot
 @Widgetset("com.ati.vaadin.ui.main.FpEstimationWidgetSet")
-public class EstimationEditView extends UI implements SystemEstimationChangedHandler {
+public class EstimationEditView extends UI {
 
     private ComboBox txtSystemType;
     private Label lblEfortTotal, lblStatus, lblName, lblStack;
@@ -88,8 +87,8 @@ public class EstimationEditView extends UI implements SystemEstimationChangedHan
 
     private void loadSystemEstimations() {
         for (SystemEstimation systemEstimation : currentEstimation.getSystemEstimationList()) {
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this, this.currentEstimation.getStackType());
-            //      estimationProviders.add(systemEstimationPanel);
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this.currentEstimation.getStackType());
+            systemEstimationPanel.addSystemEstimationChangedHandler(updatedEstimation -> updateEffortValue());
             systemsContainer.addComponent(systemEstimationPanel);
         }
     }
@@ -103,15 +102,17 @@ public class EstimationEditView extends UI implements SystemEstimationChangedHan
         btnAddSystem.addClickListener(e -> {
             addSystemEstimation();
         });
-
+        lblEfortTotal.addStyleName(ValoTheme.LABEL_H3);
+        lblEfortTotal.addStyleName(ValoTheme.LABEL_COLORED);
+        lblEfortTotal.addStyleName(ValoTheme.LABEL_BOLD);
     }
 
     private void addSystemEstimation() {
         //TODO ATI read app type from combobox
         try {
             SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this, currentEstimation.getStackType());
-            //  estimationProviders.add(systemEstimationPanel);
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation,  currentEstimation.getStackType());
+            systemEstimationPanel.addSystemEstimationChangedHandler(updatedEstimation -> updateEffortValue());
             systemsContainer.addComponent(systemEstimationPanel);
         } catch (ValidationException e1) {
             Notification.show("", e1.getMessage(), Notification.Type.ERROR_MESSAGE);
@@ -130,10 +131,6 @@ public class EstimationEditView extends UI implements SystemEstimationChangedHan
         lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(currentEstimation.getTotalEffortInPt()));
     }
 
-    @Override
-    public void estimationChanged(SystemEstimation updatedEstimation) {
-        updateEffortValue();
-    }
 
     @WebServlet(urlPatterns = "/*", name = "FpEstimationServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = EstimationEditView.class, productionMode = false)

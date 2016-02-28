@@ -5,25 +5,20 @@ import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.domain.kpi.AppStackType;
 import com.ati.fpestimation.domain.kpi.EstimationFactor;
 import com.ati.fpestimation.ui.UiLabelHelper;
-import com.ati.fpestimation.ui.callback.ModuleEstimationChangedHandler;
-import com.ati.fpestimation.ui.callback.SystemEstimationChangedHandler;
 import com.ati.fpestimation.ui.main.EstimationEditView;
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
-import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Collection;
 
 
 @DesignRoot
-public class SystemEstimationPanel extends Panel implements ModuleEstimationChangedHandler {
+public class SystemEstimationPanel extends Panel {
 
     private VerticalLayout componentContainer;
-    private SystemEstimationChangedHandler systemEstimationChangedHandler;
+    private SystemEstimationChangedListener systemEstimationChangedListener;
     // private List<PtEstimationProvider> estimationProviders = new ArrayList<>();
     private Label lblTotalEffort;
     private Button btnAddModule;
@@ -32,16 +27,15 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
     private ComboBox txtFactor;
     //TODO check if stack is needed here
     private AppStackType appStackType;
+    private CssLayout moduleNameGroup;
 
-    public SystemEstimationPanel(SystemEstimation systemEstimation, SystemEstimationChangedHandler systemEstimationChangedHandler, AppStackType appStack) {
+    public SystemEstimationPanel(SystemEstimation systemEstimation, AppStackType appStack) {
         super(systemEstimation.getAppType().getName());
         this.systemEstimation = systemEstimation;
-        this.systemEstimationChangedHandler = systemEstimationChangedHandler;
         this.appStackType = appStack;
         Design.read(this);
         initTopRow();
         preloadEstimationData();
-        this.addStyleName(ValoTheme.PANEL_WELL);
 
     }
 
@@ -52,12 +46,14 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
 
     protected void initTopRow() {
         btnAddModule.addClickListener(e -> addModuleEventHandler());
+        moduleNameGroup.addStyleName("v-component-group");
+        txtModuleName.setInputPrompt("Module name:");
         buildFactorComboBox(EstimationEditView.getAppStackProvider()
                 .getFactorForApp(systemEstimation.getAppType()));
     }
 
     private void addModuleEventHandler() {
-        if (txtModuleName.getValue() != null && txtModuleName.getValue().trim().length() != 0) {
+        if (UiLabelHelper.isValueSet(txtModuleName)) {
             ModuleEstimation moduleEstimation = systemEstimation.addModuleEstimation(txtModuleName.getValue());
             addModuleEstimationPanel(moduleEstimation);
             txtModuleName.clear();
@@ -65,7 +61,8 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
     }
 
     private void addModuleEstimationPanel(ModuleEstimation moduleEstimation) {
-        ModuleEstimationPanel moduleEstimationPanel = new ModuleEstimationPanel(moduleEstimation, this);
+        ModuleEstimationPanel moduleEstimationPanel = new ModuleEstimationPanel(moduleEstimation);
+        moduleEstimationPanel.addModuleEstimationChangedListener(() -> estimationChanged());
         componentContainer.addComponent(moduleEstimationPanel);
         componentContainer.setComponentAlignment(moduleEstimationPanel, Alignment.TOP_CENTER);
     }
@@ -76,18 +73,16 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
         txtFactor.setNullSelectionAllowed(false);
         txtFactor.setRequired(true);
         txtFactor.setRequiredError("Pick a system");
-        txtFactor.setItemCaptionPropertyId("name");
+        txtFactor.setItemCaptionPropertyId("uiName");
+
         if (container.firstItemId() != null && systemEstimation.getEstimationFactor() == null) {
             txtFactor.select(container.firstItemId());
             systemEstimation.setEstimationFactor((EstimationFactor) txtFactor.getValue());
             estimationChanged();
         }
-        txtFactor.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                systemEstimation.setEstimationFactor((EstimationFactor) txtFactor.getValue());
-                estimationChanged();
-            }
+        txtFactor.addValueChangeListener(event -> {
+            systemEstimation.setEstimationFactor((EstimationFactor) txtFactor.getValue());
+            estimationChanged();
         });
     }
 
@@ -95,13 +90,21 @@ public class SystemEstimationPanel extends Panel implements ModuleEstimationChan
         lblTotalEffort.setValue(UiLabelHelper.formatPtEffort(systemEstimation.getTotalEffortInPt()));
     }
 
-
-    @Override
     public void estimationChanged() {
-
-        if (systemEstimationChangedHandler != null) {
-            systemEstimationChangedHandler.estimationChanged(systemEstimation);
+        if (systemEstimationChangedListener != null) {
+            systemEstimationChangedListener.estimationChanged(systemEstimation);
         }
         updateEffortValue();
     }
+
+
+    public interface SystemEstimationChangedListener {
+        void estimationChanged(SystemEstimation updatedEstimation);
+
+    }
+
+    public void addSystemEstimationChangedHandler(SystemEstimationChangedListener systemEstimationChangedHandler) {
+        this.systemEstimationChangedListener = systemEstimationChangedHandler;
+    }
+
 }

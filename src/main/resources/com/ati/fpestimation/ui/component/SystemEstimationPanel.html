@@ -1,17 +1,16 @@
-
-<v-panel description="OfflineOE" :center="" :middle="" margin="true"  >
+<v-panel :center="" :middle="" margin="true">
     <v-vertical-layout>
-        <v-horizontal-layout spacing="true" width-full="true" >
-            <v-text-field caption="Module name:"  width="200px"  id="txtModuleName" :center=""></v-text-field>
-            <v-button plain-text="" :middle="" :center="" id="btnAddModule">
-                Add component
-            </v-button>
-            <v-combo-box caption="Factor:" item-caption-mode="id" id="txtFactor"/>
-            <v-label size-auto="true" plain-text="" :bottom="" :center="" id="lblTotalEffort">
+        <v-horizontal-layout spacing="true" width-full="true">
+            <v-css-layout id="moduleNameGroup" :bottom="" :center="">
+                <v-text-field  width="200px" id="txtModuleName" ></v-text-field>
+                <v-button plain-text="" id="btnAddModule">Add</v-button>
+            </v-css-layout>
+            <v-combo-box caption="Factor:" item-caption-mode="id" width="250px" id="txtFactor"/>
+            <v-label size-auto="true" plain-text="" :bottom="" :right="" id="lblTotalEffort">
                 Total: 100 PT
             </v-label>
         </v-horizontal-layout>
-        <v-vertical-layout id="componentContainer">
+        <v-vertical-layout id="componentContainer" spacing="true">
 
 
         </v-vertical-layout>
