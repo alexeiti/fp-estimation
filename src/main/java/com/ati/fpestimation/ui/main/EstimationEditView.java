@@ -10,6 +10,7 @@ import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.exception.ValidationException;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
+import com.ati.fpestimation.ui.main.booksample.BookLibraryUi;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -47,6 +48,7 @@ public class EstimationEditView extends UI {
     private FpEstimation currentEstimation;
     private FpEstimationRepository estimationRepository;
 
+
     public EstimationEditView() throws IOException {
         Design.read(this);
         appStackRepository = new FileAppStackRepository();
@@ -59,30 +61,23 @@ public class EstimationEditView extends UI {
 //*********************
 
     private void test() {
-        List<sample> sapleList = new ArrayList();
-        sapleList.add(new sample(20, "alex", "male"));
-        sapleList.add(new sample(20, "vika", "female"));
-        Table table = new Table("Sample table");
-        BeanItemContainer beanEstimationContainer =
-                new BeanItemContainer<sample>(sample.class, sapleList);
-        table.setContainerDataSource(beanEstimationContainer);
-        table.addStyleName(ValoTheme.TABLE_BORDERLESS);
-        table.addStyleName(ValoTheme.TABLE_NO_STRIPES);
-        table.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
-        table.addStyleName(ValoTheme.TABLE_SMALL);
 
-        table.setEditable(true);
-        systemsContainer.addComponent(table);
+        systemsContainer.addComponent(new BookLibraryUi());
+        systemsContainer.setHeight(1000f,Unit.PIXELS);
     }
 
     //*********************
+    private boolean testMode = true;
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        buildTopControlRow();
-        loadSystemEstimations();
-        updateEffortValue();
-        mainContainer.setComponentAlignment(contentContainer, Alignment.MIDDLE_CENTER);
-        //test();
+        if (!testMode) {
+            buildTopControlRow();
+            loadSystemEstimations();
+            updateEffortValue();
+            mainContainer.setComponentAlignment(contentContainer, Alignment.MIDDLE_CENTER);
+        } else
+            test();
     }
 
     private void loadSystemEstimations() {
@@ -111,7 +106,7 @@ public class EstimationEditView extends UI {
         //TODO ATI read app type from combobox
         try {
             SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation,  currentEstimation.getStackType());
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, currentEstimation.getStackType());
             systemEstimationPanel.addSystemEstimationChangedHandler(updatedEstimation -> updateEffortValue());
             systemsContainer.addComponent(systemEstimationPanel);
         } catch (ValidationException e1) {

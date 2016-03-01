@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/fp_estimation.iml" filepath="$PROJECT_DIR$/fp_estimation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dashboard-demo/quicktickets-dashboard.iml" filepath="$PROJECT_DIR$/../dashboard-demo/quicktickets-dashboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../valo-demo/valotheme.iml" filepath="$PROJECT_DIR$/../valo-demo/valotheme.iml" />
     </modules>
   </component>
 </project>
