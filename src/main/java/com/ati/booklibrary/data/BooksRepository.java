@@ -1,5 +1,7 @@
-package com.ati.fpestimation.ui.main.booksample;
+package com.ati.booklibrary.data;
 
+
+import com.ati.booklibrary.domain.BookInfo;
 
 import java.util.*;
 
@@ -14,7 +16,7 @@ public class BooksRepository {
             book.setTitle("Title" + i * 11);
             book.setAuthor("Author " + i * 10 + " Junior");
             book.setNumberOfPages(rand.nextInt(300));
-            book.setRating(rand.nextInt(100));
+
             book.setPurchaseDate(getRandomDate());
             result.add(book);
         }

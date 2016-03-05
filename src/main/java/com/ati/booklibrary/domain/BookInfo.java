@@ -1,16 +1,18 @@
-package com.ati.fpestimation.ui.main.booksample;
+package com.ati.booklibrary.domain;
+
+import com.ati.common.domain.EmployeeInfo;
 
 import java.util.Date;
 
 public class BookInfo {
 
+    private int internalId;
     private String title;
     private String author;
-    private BookLender currentLender;
+    private EmployeeInfo currentLender;
     private Date purchaseDate;
     private int numberOfPages;
-    private float rating;
-    private int internalId;
+
     private String isbn;
 
     public int getInternalId() {
@@ -47,7 +49,7 @@ public class BookInfo {
         return currentLender;
     }
 
-    public void setCurrentLender(BookLender currentLender) {
+    public void setCurrentLender(EmployeeInfo currentLender) {
         this.currentLender = currentLender;
     }
 
@@ -67,41 +69,11 @@ public class BookInfo {
         this.numberOfPages = numberOfPages;
     }
 
-    public float getRating() {
-        return rating;
+    public String getIsbn() {
+        return isbn;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    private class BookLender {
-        String firstName;
-        String lastName;
-        Date lendDate;
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public Date getLendDate() {
-            return lendDate;
-        }
-
-        public void setLendDate(Date lendDate) {
-            this.lendDate = lendDate;
-        }
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 }

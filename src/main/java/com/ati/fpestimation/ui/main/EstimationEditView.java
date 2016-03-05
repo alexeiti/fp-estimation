@@ -10,12 +10,11 @@ import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.exception.ValidationException;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
-import com.ati.fpestimation.ui.main.booksample.BookLibraryUi;
+import com.ati.booklibrary.ui.BookLibraryUi;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -25,9 +24,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
