@@ -1,5 +1,6 @@
 package com.ati.fpestimation.ui.main;
 
+import com.ati.booklibrary.ui.BookLibraryView;
 import com.ati.fpestimation.data.AppStackRepository;
 import com.ati.fpestimation.data.FpEstimationRepository;
 import com.ati.fpestimation.data.FunctionRepository;
@@ -10,28 +11,22 @@ import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.exception.ValidationException;
 import com.ati.fpestimation.ui.UiLabelHelper;
 import com.ati.fpestimation.ui.component.SystemEstimationPanel;
-import com.ati.booklibrary.ui.BookLibraryUi;
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
-import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-
-@Theme("mytheme")
 @DesignRoot
-@Widgetset("com.ati.vaadin.ui.main.FpEstimationWidgetSet")
-public class EstimationEditView extends UI {
+public class EstimationEditView extends CustomComponent implements View {
 
     private ComboBox txtSystemType;
     private Label lblEfortTotal, lblStatus, lblName, lblStack;
@@ -47,6 +42,7 @@ public class EstimationEditView extends UI {
 
 
     public EstimationEditView() throws IOException {
+        //TODO ATI fix design
         Design.read(this);
         appStackRepository = new FileAppStackRepository();
         //TODO ATI use real estimation provider
@@ -59,14 +55,14 @@ public class EstimationEditView extends UI {
 
     private void test() {
 
-        systemsContainer.addComponent(new BookLibraryUi());
-        systemsContainer.setHeight(1000f,Unit.PIXELS);
+        systemsContainer.addComponent(new BookLibraryView());
+        systemsContainer.setHeight(1000f, Sizeable.Unit.PIXELS);
     }
 
     //*********************
     private boolean testMode = true;
 
-    @Override
+    //TODO ATI use in constructor
     protected void init(VaadinRequest vaadinRequest) {
         if (!testMode) {
             buildTopControlRow();
@@ -123,26 +119,31 @@ public class EstimationEditView extends UI {
         lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(currentEstimation.getTotalEffortInPt()));
     }
 
-
-    @WebServlet(urlPatterns = "/*", name = "FpEstimationServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = EstimationEditView.class, productionMode = false)
-    public static class FpEstimationServlet extends VaadinServlet {
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
 
     }
 
 
     public static AppStackRepository getAppStackProvider() {
-        return ((EstimationEditView) getCurrent()).appStackRepository;
+        //TODO ATI fix usage
+        return null;
+        //return ((EstimationEditView) getCurrent()).appStackRepository;
     }
 
     public static FpEstimation getCurrentEstimation() {
-        return ((EstimationEditView) getCurrent()).currentEstimation;
+        //TODO ATI fix usage
+        return null;
+        //return ((EstimationEditView) getCurrent()).currentEstimation;
     }
 
     //TODO ATI move method to AppStackRepository
     private FunctionRepository estimationFunctionRepository = new FunctionRepository();
 
     public static FunctionRepository getFunctionProvider() {
-        return ((EstimationEditView) getCurrent()).estimationFunctionRepository;
+        //TODO ATI fix usage
+        return null;
+        //return ((EstimationEditView) getCurrent()).estimationFunctionRepository;
     }
+
 }

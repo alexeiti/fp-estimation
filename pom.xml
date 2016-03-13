@@ -142,7 +142,7 @@
                     <style>OBF</style>
                     <strict>true</strict>
                     <modules>
-                        <module>com.ati.vaadin.ui.main.FpEstimationWidgetSet</module>
+                        <module>com.ati.main.ui.DashboardUIWidgetSet</module>
                     </modules>
                 </configuration>
                 <executions>

@@ -8,6 +8,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
@@ -15,13 +17,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
-public class BookLibraryUi extends VerticalLayout {
+public class BookLibraryView extends VerticalLayout implements View {
     IndexedContainer itemContainer;
     BeanItemContainer beanItemContainer;
     Grid grid;
     Grid.HeaderRow filterRow;
 
-    public BookLibraryUi() {
+    public BookLibraryView() {
         itemContainer = new IndexedContainer(BooksRepository.getAllBooks());
         beanItemContainer = new BeanItemContainer(BookInfo.class, BooksRepository.getAllBooks());
         grid = new Grid();
@@ -107,4 +109,8 @@ public class BookLibraryUi extends VerticalLayout {
     }
 
 
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        //TODO implement
+    }
 }
