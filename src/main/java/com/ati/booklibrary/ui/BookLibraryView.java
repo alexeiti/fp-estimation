@@ -23,6 +23,7 @@ public class BookLibraryView extends VerticalLayout implements View {
     Grid grid;
     Grid.HeaderRow filterRow;
 
+    //TODO ATI move design to html template file
     public BookLibraryView() {
         itemContainer = new IndexedContainer(BooksRepository.getAllBooks());
         beanItemContainer = new BeanItemContainer(BookInfo.class, BooksRepository.getAllBooks());
@@ -58,6 +59,8 @@ public class BookLibraryView extends VerticalLayout implements View {
 
 
         this.addComponent(grid);
+        this.setMargin(true);
+        this.setWidth(90, Unit.PERCENTAGE);
     }
 
     private void enableInlineBookDetails() {

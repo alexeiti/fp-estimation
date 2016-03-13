@@ -10,7 +10,6 @@ public class MainView extends HorizontalLayout {
     public MainView() {
         setSizeFull();
         addStyleName("mainview");
-        //TODO ATI build ui
         addComponent(new DashboardMenu());
 
         ComponentContainer content = new CssLayout();
@@ -18,7 +17,7 @@ public class MainView extends HorizontalLayout {
         content.setSizeFull();
         addComponent(content);
         setExpandRatio(content, 1.0f);
-//TODO ATI fix usage
+        //TODO ATI fix usage
         new DashboardUiNavigator(content);
     }
 }

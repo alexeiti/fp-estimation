@@ -34,11 +34,13 @@ public class DashboardUI extends UI {
         setContent(new MainView());
         //   removeStyleName("loginview");#
         final String f = Page.getCurrent().getUriFragment();
-        if (f == null || f.equals("")) {
+     /*   if (f == null || f.equals("")) {
             getNavigator().navigateTo("common");
-        }
-        getNavigator().navigateTo("common");
-        //getNavigator().navigateTo(getNavigator().getState());
+        }*/
+
+        //TODO ATI make it dinamic
+        getNavigator().navigateTo(DashboardViewType.BOOK_LIBRARY.getViewName());
+        //  getNavigator().navigateTo(getNavigator().getState());
 
     }
 

@@ -1,6 +1,5 @@
 package com.ati.fpestimation.ui.main;
 
-import com.ati.booklibrary.ui.BookLibraryView;
 import com.ati.fpestimation.data.AppStackRepository;
 import com.ati.fpestimation.data.FpEstimationRepository;
 import com.ati.fpestimation.data.FunctionRepository;
@@ -15,8 +14,6 @@ import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Sizeable;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
@@ -26,7 +23,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @DesignRoot
-public class EstimationEditView extends CustomComponent implements View {
+public class EstimationEditView extends Panel implements View {
 
     private ComboBox txtSystemType;
     private Label lblEfortTotal, lblStatus, lblName, lblStack;
@@ -36,46 +33,37 @@ public class EstimationEditView extends CustomComponent implements View {
     private Layout systemsContainer, addSystemContainer, contentContainer;
     private VerticalLayout mainContainer;
 
-    private AppStackRepository appStackRepository;
-    private FpEstimation currentEstimation;
-    private FpEstimationRepository estimationRepository;
+    //TODO ATI weave the repositories as beans
+    private static AppStackRepository appStackRepository;
+
+    private static FpEstimation currentEstimation;
+    private static FpEstimationRepository estimationRepository;
+
+    static {
+        try {
+            appStackRepository = new FileAppStackRepository();
+            //TODO ATI use real estimation provider
+            estimationRepository = new DummyFpEstimationRepository();
+            //TODO ATI use correct Id
+            currentEstimation = estimationRepository.find("some id");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public EstimationEditView() throws IOException {
-        //TODO ATI fix design
-        Design.read(this);
-        appStackRepository = new FileAppStackRepository();
-        //TODO ATI use real estimation provider
-        estimationRepository = new DummyFpEstimationRepository();
-        //TODO ATI use correct Id
-        currentEstimation = estimationRepository.find("some id");
+        Design.read("EstimationEditView.html", this);
+        buildTopControlRow();
+        loadSystemEstimations();
+        updateEffortValue();
+        //this.setComponentAlignment(mainContainer, Alignment.MIDDLE_CENTER);
 
-    }
-//*********************
-
-    private void test() {
-
-        systemsContainer.addComponent(new BookLibraryView());
-        systemsContainer.setHeight(1000f, Sizeable.Unit.PIXELS);
-    }
-
-    //*********************
-    private boolean testMode = true;
-
-    //TODO ATI use in constructor
-    protected void init(VaadinRequest vaadinRequest) {
-        if (!testMode) {
-            buildTopControlRow();
-            loadSystemEstimations();
-            updateEffortValue();
-            mainContainer.setComponentAlignment(contentContainer, Alignment.MIDDLE_CENTER);
-        } else
-            test();
     }
 
     private void loadSystemEstimations() {
         for (SystemEstimation systemEstimation : currentEstimation.getSystemEstimationList()) {
-            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, this.currentEstimation.getStackType());
+            SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, currentEstimation.getStackType());
             systemEstimationPanel.addSystemEstimationChangedHandler(updatedEstimation -> updateEffortValue());
             systemsContainer.addComponent(systemEstimationPanel);
         }
@@ -85,7 +73,7 @@ public class EstimationEditView extends CustomComponent implements View {
     private void buildTopControlRow() {
         lblName.setValue(currentEstimation.getName());
         lblStack.setValue(currentEstimation.getStackType().getName());
-        buildSystemComboBox(EstimationEditView.getAppStackProvider().getAllAppsForStack(currentEstimation.getStackType().getId())
+        buildSystemComboBox(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId())
                 .stream().map(appType -> appType.getName()).collect(Collectors.toList()));
         btnAddSystem.addClickListener(e -> {
             addSystemEstimation();
@@ -119,31 +107,20 @@ public class EstimationEditView extends CustomComponent implements View {
         lblEfortTotal.setValue(UiLabelHelper.formatPtEffort(currentEstimation.getTotalEffortInPt()));
     }
 
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
 
     }
 
-
     public static AppStackRepository getAppStackProvider() {
-        //TODO ATI fix usage
-        return null;
-        //return ((EstimationEditView) getCurrent()).appStackRepository;
-    }
-
-    public static FpEstimation getCurrentEstimation() {
-        //TODO ATI fix usage
-        return null;
-        //return ((EstimationEditView) getCurrent()).currentEstimation;
+        return appStackRepository;
     }
 
     //TODO ATI move method to AppStackRepository
-    private FunctionRepository estimationFunctionRepository = new FunctionRepository();
+    private static FunctionRepository estimationFunctionRepository = new FunctionRepository();
 
     public static FunctionRepository getFunctionProvider() {
-        //TODO ATI fix usage
-        return null;
-        //return ((EstimationEditView) getCurrent()).estimationFunctionRepository;
+        return estimationFunctionRepository;
     }
-
 }
