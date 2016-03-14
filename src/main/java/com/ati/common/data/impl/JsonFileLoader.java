@@ -1,4 +1,4 @@
-package com.ati.fpestimation.data.impl;
+package com.ati.common.data.impl;
 
 import com.ati.fpestimation.domain.kpi.AppStackType;
 import com.ati.fpestimation.domain.kpi.AppType;
@@ -14,7 +14,7 @@ public class JsonFileLoader {
 
     private static final String CONFIG_FOLDER = "json_config/";
 
-    protected static List<AppStackType> loadAllStackTypes() throws IOException {
+    public static List<AppStackType> loadAllStackTypes() throws IOException {
         final String fileName = "stackTypes.cfg";
         ObjectMapper mapper = new ObjectMapper();
 
@@ -26,7 +26,7 @@ public class JsonFileLoader {
     }
 
 
-    protected static List<AppType> loadAllAppTypes() throws IOException {
+    public static List<AppType> loadAllAppTypes() throws IOException {
         final String fileName = "appTypes.cfg";
         ObjectMapper mapper = new ObjectMapper();
 

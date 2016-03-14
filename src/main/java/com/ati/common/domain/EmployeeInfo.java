@@ -5,6 +5,11 @@ public class EmployeeInfo {
     String firstName;
     String lastName;
 
+    public EmployeeInfo(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -21,4 +26,8 @@ public class EmployeeInfo {
         this.lastName = lastName;
     }
 
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }

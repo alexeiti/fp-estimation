@@ -1,6 +1,9 @@
 package com.ati.booklibrary.ui;
 
 import com.ati.booklibrary.domain.BookInfo;
+import com.ati.common.data.CommonRepositoryFactory;
+import com.ati.common.domain.EmployeeInfo;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -47,10 +50,12 @@ public class BookDetailsInfoGenerator extends VerticalLayout {
 
     private Layout buildLenderBox() {
         HorizontalLayout hLayout = new HorizontalLayout();
-        //TODO populate with empl list
+
         ComboBox cboLender = new ComboBox("Lender:");
         cboLender.addStyleName(ValoTheme.COMBOBOX_SMALL);
         cboLender.setWidth(300, Unit.PIXELS);
+        cboLender.setContainerDataSource(new BeanItemContainer<EmployeeInfo>(EmployeeInfo.class, CommonRepositoryFactory.getEmployeeRepository().getAllEmployees()));
+
         hLayout.addComponent(cboLender);
 
 //TODO read real date

@@ -1,10 +1,7 @@
 package com.ati.fpestimation.ui.main;
 
-import com.ati.fpestimation.data.AppStackRepository;
-import com.ati.fpestimation.data.FpEstimationRepository;
+import com.ati.fpestimation.data.FpEstimationRepositoryFactory;
 import com.ati.fpestimation.data.FunctionRepository;
-import com.ati.fpestimation.data.impl.DummyFpEstimationRepository;
-import com.ati.fpestimation.data.impl.FileAppStackRepository;
 import com.ati.fpestimation.domain.estimation.FpEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.exception.ValidationException;
@@ -33,22 +30,15 @@ public class EstimationEditView extends Panel implements View {
     private Layout systemsContainer, addSystemContainer, contentContainer;
     private VerticalLayout mainContainer;
 
-    //TODO ATI weave the repositories as beans
-    private static AppStackRepository appStackRepository;
 
     private static FpEstimation currentEstimation;
-    private static FpEstimationRepository estimationRepository;
+
 
     static {
-        try {
-            appStackRepository = new FileAppStackRepository();
-            //TODO ATI use real estimation provider
-            estimationRepository = new DummyFpEstimationRepository();
-            //TODO ATI use correct Id
-            currentEstimation = estimationRepository.find("some id");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        //TODO ATI use correct Id
+        currentEstimation = FpEstimationRepositoryFactory.getFpEstimationRepository().find("some id");
+
     }
 
 
@@ -73,7 +63,7 @@ public class EstimationEditView extends Panel implements View {
     private void buildTopControlRow() {
         lblName.setValue(currentEstimation.getName());
         lblStack.setValue(currentEstimation.getStackType().getName());
-        buildSystemComboBox(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId())
+        buildSystemComboBox(FpEstimationRepositoryFactory.getAppStackRepository().getAllAppsForStack(currentEstimation.getStackType().getId())
                 .stream().map(appType -> appType.getName()).collect(Collectors.toList()));
         btnAddSystem.addClickListener(e -> {
             addSystemEstimation();
@@ -86,7 +76,7 @@ public class EstimationEditView extends Panel implements View {
     private void addSystemEstimation() {
         //TODO ATI read app type from combobox
         try {
-            SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(appStackRepository.getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
+            SystemEstimation systemEstimation = currentEstimation.addNewSystemEstimation(FpEstimationRepositoryFactory.getAppStackRepository().getAllAppsForStack(currentEstimation.getStackType().getId()).get(0));
             SystemEstimationPanel systemEstimationPanel = new SystemEstimationPanel(systemEstimation, currentEstimation.getStackType());
             systemEstimationPanel.addSystemEstimationChangedHandler(updatedEstimation -> updateEffortValue());
             systemsContainer.addComponent(systemEstimationPanel);
@@ -113,9 +103,6 @@ public class EstimationEditView extends Panel implements View {
 
     }
 
-    public static AppStackRepository getAppStackProvider() {
-        return appStackRepository;
-    }
 
     //TODO ATI move method to AppStackRepository
     private static FunctionRepository estimationFunctionRepository = new FunctionRepository();

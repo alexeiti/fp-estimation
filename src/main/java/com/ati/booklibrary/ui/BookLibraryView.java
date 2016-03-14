@@ -4,81 +4,83 @@ package com.ati.booklibrary.ui;
 import com.ati.booklibrary.data.BooksRepository;
 import com.ati.booklibrary.domain.BookInfo;
 import com.ati.common.ui.BooleanToFontIconConverter;
+import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.server.Responsive;
+import com.vaadin.ui.*;
+import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
-public class BookLibraryView extends VerticalLayout implements View {
+@DesignRoot
+public class BookLibraryView extends Panel implements View {
     IndexedContainer itemContainer;
     BeanItemContainer beanItemContainer;
-    Grid grid;
+    Grid booksGrid;
     Grid.HeaderRow filterRow;
+    Label headerLabel;
 
-    //TODO ATI move design to html template file
+
     public BookLibraryView() {
+        Design.read(this);
+        setSizeFull();
+        headerLabel.setValue("Book library");
+        headerLabel.setSizeUndefined();
+        headerLabel.addStyleName(ValoTheme.LABEL_H1);
+        headerLabel.addStyleName(ValoTheme.LABEL_NO_MARGIN);
         itemContainer = new IndexedContainer(BooksRepository.getAllBooks());
         beanItemContainer = new BeanItemContainer(BookInfo.class, BooksRepository.getAllBooks());
-        grid = new Grid();
 
 
-        grid.setContainerDataSource(beanItemContainer);
+        booksGrid.setContainerDataSource(beanItemContainer);
         //   setColumnFiltering();
-        grid.setHeaderVisible(true);
-        grid.setFooterVisible(true);
-        grid.setSizeFull();
-        this.setWidth(100f, Unit.PERCENTAGE);
-        this.setHeight(100f, Unit.PERCENTAGE);
+        booksGrid.setHeaderVisible(true);
+        booksGrid.setFooterVisible(true);
 
-        //Remove the columns that we dont want to have in result grid
-        grid.removeColumn("internalId");
-        grid.removeColumn("purchaseDate");
-        grid.removeColumn("numberOfPages");
-        grid.removeColumn("currentLender");
-        grid.removeColumn("isbn");
-        grid.setColumnOrder("title", "author", "available");
-        grid.getColumn("available")
+
+        //Remove the columns that we dont want to have in result booksGrid
+        booksGrid.removeColumn("internalId");
+        booksGrid.removeColumn("purchaseDate");
+        booksGrid.removeColumn("numberOfPages");
+        booksGrid.removeColumn("currentLender");
+        booksGrid.removeColumn("isbn");
+        booksGrid.setColumnOrder("title", "author", "available");
+        booksGrid.getColumn("available")
                 .setMaximumWidth(100)
                 .setConverter(new BooleanToFontIconConverter())
                 .setRenderer(new HtmlRenderer())
         ;
-        grid.getColumn("title").setExpandRatio(4);
-        grid.getColumn("author").setExpandRatio(2);
+        booksGrid.getColumn("title").setExpandRatio(4);
+        booksGrid.getColumn("author").setExpandRatio(2);
 
         addTextRendererToColumn("title");
         addTextRendererToColumn("author");
         enableInlineBookDetails();
+        booksGrid.setSizeFull();
 
-
-        this.addComponent(grid);
-        this.setMargin(true);
-        this.setWidth(90, Unit.PERCENTAGE);
     }
 
     private void enableInlineBookDetails() {
         //Show the details of book
-        grid.setEditorEnabled(false);
-        grid.setDetailsGenerator(new Grid.DetailsGenerator() {
+        booksGrid.setEditorEnabled(false);
+        booksGrid.setDetailsGenerator(new Grid.DetailsGenerator() {
             @Override
             public Component getDetails(Grid.RowReference rowReference) {
                 BookInfo bookInfo = (BookInfo) rowReference.getItemId();
                 return new BookDetailsInfoGenerator(bookInfo);
             }
         });
-        grid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+        booksGrid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
                 if (event.isDoubleClick()) {
                     Object itemId = event.getItemId();
-                    grid.setDetailsVisible(itemId, !grid.isDetailsVisible(itemId));
+                    booksGrid.setDetailsVisible(itemId, !booksGrid.isDetailsVisible(itemId));
                 }
             }
         });
@@ -87,7 +89,7 @@ public class BookLibraryView extends VerticalLayout implements View {
 
     private void addTextRendererToColumn(String propertyId) {
         if (filterRow == null)
-            filterRow = grid.appendHeaderRow();
+            filterRow = booksGrid.appendHeaderRow();
 
         Grid.HeaderCell cell = filterRow.getCell(propertyId);
 

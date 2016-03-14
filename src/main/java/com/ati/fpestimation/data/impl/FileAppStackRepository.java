@@ -1,5 +1,6 @@
 package com.ati.fpestimation.data.impl;
 
+import com.ati.common.data.impl.JsonFileLoader;
 import com.ati.fpestimation.data.AppStackRepository;
 import com.ati.fpestimation.domain.kpi.AppStackType;
 import com.ati.fpestimation.domain.kpi.AppType;
@@ -16,10 +17,14 @@ public class FileAppStackRepository implements AppStackRepository {
     private List<AppType> appTypes;
     private List<EstimationFactor> estimationFactors;
 
-    public FileAppStackRepository() throws IOException {
-        this.appStackTypes = JsonFileLoader.loadAllStackTypes();
-        this.appTypes = JsonFileLoader.loadAllAppTypes();
-        this.estimationFactors = JsonFileLoader.loadAllEstimationFactors();
+    public FileAppStackRepository() {
+        try {
+            this.appTypes = JsonFileLoader.loadAllAppTypes();
+            this.appStackTypes = JsonFileLoader.loadAllStackTypes();
+            this.estimationFactors = JsonFileLoader.loadAllEstimationFactors();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

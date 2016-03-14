@@ -1,11 +1,11 @@
 package com.ati.fpestimation.ui.component;
 
+import com.ati.fpestimation.data.FpEstimationRepositoryFactory;
 import com.ati.fpestimation.domain.estimation.ModuleEstimation;
 import com.ati.fpestimation.domain.estimation.SystemEstimation;
 import com.ati.fpestimation.domain.kpi.AppStackType;
 import com.ati.fpestimation.domain.kpi.EstimationFactor;
 import com.ati.fpestimation.ui.UiLabelHelper;
-import com.ati.fpestimation.ui.main.EstimationEditView;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
@@ -48,7 +48,7 @@ public class SystemEstimationPanel extends Panel {
         btnAddModule.addClickListener(e -> addModuleEventHandler());
         moduleNameGroup.addStyleName("v-component-group");
         txtModuleName.setInputPrompt("Module name:");
-        buildFactorComboBox(EstimationEditView.getAppStackProvider()
+        buildFactorComboBox(FpEstimationRepositoryFactory.getAppStackRepository()
                 .getFactorForApp(systemEstimation.getAppType()));
     }
 

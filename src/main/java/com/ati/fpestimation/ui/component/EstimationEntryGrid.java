@@ -11,6 +11,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +60,7 @@ public class EstimationEntryGrid extends Grid {
             }
         });
         //this.addColumn("Remove");
+        this.addStyleName(ValoTheme.TABLE_SMALL);
     }
 
     private void deleteEstimationEntry() {

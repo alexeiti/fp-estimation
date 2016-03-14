@@ -1,5 +1,6 @@
 package com.ati.fpestimation.data.impl;
 
+import com.ati.common.data.impl.JsonFileLoader;
 import com.ati.fpestimation.domain.kpi.AppStackType;
 import com.ati.fpestimation.domain.kpi.AppType;
 import com.ati.fpestimation.domain.kpi.EstimationFactor;
