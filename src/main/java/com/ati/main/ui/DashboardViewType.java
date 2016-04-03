@@ -2,12 +2,14 @@ package com.ati.main.ui;
 
 import com.ati.booklibrary.ui.BookLibraryView;
 import com.ati.fpestimation.ui.main.EstimationEditView;
+import com.ati.taskboard.ui.TaskBoardView;
 import com.vaadin.navigator.View;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
 public enum DashboardViewType {
     BOOK_LIBRARY("bookLibrary", BookLibraryView.class, FontAwesome.BAR_CHART_O, false),
+    TASKBOARD("taskBoard", TaskBoardView.class, FontAwesome.BAR_CHART_O, false),
     ESTIMATIONS("estimation", EstimationEditView.class, FontAwesome.HOME, true);
 
     private final String viewName;

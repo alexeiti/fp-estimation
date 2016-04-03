@@ -45,7 +45,7 @@ public class DashboardUI extends UI {
     }
 
     @WebServlet(urlPatterns = "/*", name = "DashboardUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = DashboardUI.class, productionMode = false)
+    @VaadinServletConfiguration( ui = DashboardUI.class, productionMode = false)
     public static class DashboardUIServlet extends VaadinServlet {
 
     }

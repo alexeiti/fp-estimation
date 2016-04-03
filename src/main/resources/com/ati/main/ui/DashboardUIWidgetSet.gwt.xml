@@ -6,6 +6,4 @@
     <inherits name="com.ati.main.ui.DashboardUIWidgetSet"/>
     <inherits name="com.vaadin.DefaultWidgetSet"/>
 
-
-    
 </module>
