@@ -49,6 +49,14 @@
 
     <dependencies>
 
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>com.jit.ati</groupId>
+            <artifactId>openProject-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- External dependencies -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

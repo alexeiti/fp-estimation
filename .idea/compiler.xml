@@ -31,16 +31,17 @@
         <processorPath useClasspath="true" />
         <module name="valotheme" />
       </profile>
-      <profile default="false" name="Annotation profile for quicktickets-dashboard" enabled="true">
+      <profile default="false" name="Annotation profile for openProject-api" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="quicktickets-dashboard" />
+        <module name="openProject-api" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="fp_estimation" target="1.8" />
+      <module name="openProject-api" target="1.8" />
       <module name="quicktickets-dashboard" target="1.6" />
       <module name="valotheme" target="1.6" />
     </bytecodeTargetLevel>
